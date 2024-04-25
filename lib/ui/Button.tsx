@@ -6,7 +6,7 @@
  *
  */
 
-import './Button.module.css';
+import './Button.css';
 
 import {ReactNode} from 'react';
 

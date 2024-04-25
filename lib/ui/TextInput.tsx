@@ -6,7 +6,7 @@
  *
  */
 
-import './Input.module.css';
+import './Input.css';
 
 import {HTMLInputTypeAttribute} from 'react';
 

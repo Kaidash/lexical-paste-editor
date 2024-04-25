@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Editor } from '../lib/main';
+// import { Editor } from '../dist/main';
 
 function App() {
 

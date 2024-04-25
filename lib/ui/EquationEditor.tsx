@@ -8,7 +8,7 @@
 
 import type {Ref, RefObject} from 'react';
 
-import './EquationEditor.module.css';
+import './EquationEditor.css';
 
 import {ChangeEvent, forwardRef} from 'react';
 

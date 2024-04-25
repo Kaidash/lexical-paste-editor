@@ -40,7 +40,7 @@ import EditorTheme from './themes/PlaygroundEditorTheme.ts'
 
 import {Actions} from './Actions'
 import DragDropPaste from './plugins/DragDropPastePlugin'
-// import FloatingLinkEditorPlugin from './plugins/FloatingLinkEditorPlugin'
+import FloatingLinkEditorPlugin from './plugins/FloatingLinkEditorPlugin'
 import LinkPlugin from './plugins/LinkPlugin'
 import ToolbarPlugin from './plugins/ToolbarPlugin'
 import ContentEditable from './ui/ContentEditable'
@@ -186,10 +186,8 @@ export default function Editor({ pasteText }: {
 
   const [lastPostition, setLastPosition] = useState<LastPosition | null>(null)
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  // const isSmallWidthViewPort = useMediaQuery('(max-width: 1025px)')
-  // const [setFloatingAnchorElem] =
-  //   useState<HTMLDivElement | undefined>(undefined)
+  const [setFloatingAnchorElem] =
+    useState<HTMLDivElement | undefined>(undefined)
 
   const placeholder = <Placeholder>Enter some rich text...</Placeholder>
   const initialEditorState = loadContent()
@@ -218,12 +216,12 @@ export default function Editor({ pasteText }: {
     setLastPosition(lastPositionProp)
   }
 
-  // const onRef = (_floatingAnchorElem: HTMLDivElement) => {
-  //   if (_floatingAnchorElem !== null) {
-  //     // @ts-ignore
-  //     setFloatingAnchorElem(_floatingAnchorElem)
-  //   }
-  // }
+  const onRef = (_floatingAnchorElem: HTMLDivElement) => {
+    if (_floatingAnchorElem !== null) {
+      // @ts-ignore
+      setFloatingAnchorElem(_floatingAnchorElem)
+    }
+  }
 
   return (
     <LexicalComposer initialConfig={initialConfig}>
@@ -239,15 +237,14 @@ export default function Editor({ pasteText }: {
             contentEditable={
               <div className="editor-scroller">
                 <div className="editor">
-                  <ContentEditable
-                  />
+                  <ContentEditable/>
                 </div>
               </div>
             }
             placeholder={placeholder}
             ErrorBoundary={LexicalErrorBoundary}
           />
-          <EnterKeyPlugin pasteText={pasteText} lastPostition={lastPostition} onFocus={handleOnFocus} />
+          {/*<EnterKeyPlugin pasteText={pasteText} lastPostition={lastPostition} onFocus={handleOnFocus} />*/}
           <OnChangePlugin onChange={handleOnChange}  />
           <InsertTextPlugin />
           <HistoryPlugin />
@@ -258,7 +255,7 @@ export default function Editor({ pasteText }: {
           <TableCellResizer />
           <HorizontalRulePlugin />
           <LinkPlugin />
-          {/*{floatingAnchorElem && !isSmallWidthViewPort && (*/}
+          {/*{floatingAnchorElem && && (*/}
           {/*  <FloatingLinkEditorPlugin isLinkEditMode={true} setIsLinkEditMode={setFloatingAnchorElem} anchorElem={floatingAnchorElem} />*/}
           {/*)}*/}
           <MarkdownShortcutPlugin transformers={TRANSFORMERS} />

@@ -6,7 +6,7 @@
  *
  */
 
-import './Modal.module.css';
+import './Modal.css';
 
 import {ReactNode, useEffect, useRef} from 'react';
 import {createPortal} from 'react-dom';

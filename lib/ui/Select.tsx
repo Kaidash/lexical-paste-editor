@@ -6,7 +6,7 @@
  *
  */
 
-import './Select.module.css';
+import './Select.css';
 
 type SelectIntrinsicProps = JSX.IntrinsicElements['select'];
 interface SelectProps extends SelectIntrinsicProps {
