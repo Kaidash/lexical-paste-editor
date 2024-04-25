@@ -6,7 +6,7 @@
  *
  */
 
-import './Dialog.module.css';
+import './Dialog.css';
 
 import {ReactNode} from 'react';
 

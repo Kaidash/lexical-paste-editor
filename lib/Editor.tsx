@@ -2,6 +2,8 @@ import {useRef, useState} from 'react'
 import {useEffect} from 'react'
 import {useLayoutEffect} from 'react'
 
+import './index.css';
+
 // import useMediaQuery from './hooks/useMediaQuery'
 
 import type {EditorState}from 'lexical'
@@ -186,8 +188,8 @@ export default function Editor({ pasteText }: {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   // const isSmallWidthViewPort = useMediaQuery('(max-width: 1025px)')
-  const [setFloatingAnchorElem] =
-    useState<HTMLDivElement | undefined>(undefined)
+  // const [setFloatingAnchorElem] =
+  //   useState<HTMLDivElement | undefined>(undefined)
 
   const placeholder = <Placeholder>Enter some rich text...</Placeholder>
   const initialEditorState = loadContent()
@@ -216,12 +218,12 @@ export default function Editor({ pasteText }: {
     setLastPosition(lastPositionProp)
   }
 
-  const onRef = (_floatingAnchorElem: HTMLDivElement) => {
-    if (_floatingAnchorElem !== null) {
-      // @ts-ignore
-      setFloatingAnchorElem(_floatingAnchorElem)
-    }
-  }
+  // const onRef = (_floatingAnchorElem: HTMLDivElement) => {
+  //   if (_floatingAnchorElem !== null) {
+  //     // @ts-ignore
+  //     setFloatingAnchorElem(_floatingAnchorElem)
+  //   }
+  // }
 
   return (
     <LexicalComposer initialConfig={initialConfig}>
@@ -236,7 +238,7 @@ export default function Editor({ pasteText }: {
           <RichTextPlugin
             contentEditable={
               <div className="editor-scroller">
-                <div className="editor" ref={onRef}>
+                <div className="editor">
                   <ContentEditable
                   />
                 </div>
