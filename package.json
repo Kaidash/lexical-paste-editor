@@ -15,6 +15,7 @@
     "**/*.css"
   ],
   "scripts": {
+    "prepare": "husky install",
     "dev": "vite",
     "build": "tsc --p ./tsconfig-build.json && vite build",
     "prepublishOnly": "npm run build",
@@ -24,19 +25,36 @@
   },
   "keywords": [
     "react",
-    "yombal-ui",
-    "yombal"
+    "lexical",
+    "editor"
   ],
   "peerDependencies": {
+    "@lexical/clipboard": "0.14.5",
+    "@lexical/code": "0.14.5",
+    "@lexical/file": "0.14.5",
+    "@lexical/hashtag": "0.14.5",
+    "@lexical/link": "0.14.5",
+    "@lexical/list": "0.14.5",
+    "@lexical/mark": "0.14.5",
+    "@lexical/overflow": "0.14.5",
+    "@lexical/plain-text": "0.14.5",
     "@lexical/react": "0.14.5",
+    "@lexical/rich-text": "0.14.5",
+    "@lexical/selection": "0.14.5",
     "@lexical/table": "^0.14.5",
     "@lexical/utils": "^0.14.5",
     "lexical": "^0.14.5",
+    "lodash-es": "^4.17.21",
+    "prettier": "^2.3.2",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-error-boundary": "^3.1.4",
+    "y-websocket": "^1.5.4",
+    "yjs": ">=13.5.42"
   },
   "devDependencies": {
-    "@types/katex": "^0.16.7",
+    "husky": "^8.0.3",
+    "@types/lodash-es": "^4.17.12",
     "@types/node": "^20.11.0",
     "@types/react": "^18.2.43",
     "@types/react-dom": "^18.2.17",
@@ -48,7 +66,6 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.5",
     "glob": "^10.3.10",
-    "katex": "^0.16.10",
     "postcss": "^8.4.33",
     "prettier": "^3.2.1",
     "tailwindcss": "^3.4.1",

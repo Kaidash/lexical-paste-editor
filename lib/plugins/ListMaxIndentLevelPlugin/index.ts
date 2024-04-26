@@ -6,21 +6,26 @@
  *
  */
 
-import type {ElementNode, RangeSelection} from 'lexical';
+import type { RangeSelection } from "lexical";
 
-import {$getListDepth, $isListItemNode, $isListNode} from '@lexical/list';
-import {useLexicalComposerContext} from '@lexical/react/LexicalComposerContext';
+import { $getListDepth, $isListItemNode, $isListNode } from "@lexical/list";
+import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import {
   $getSelection,
   $isElementNode,
   $isRangeSelection,
   COMMAND_PRIORITY_CRITICAL,
+  ElementNode,
   INDENT_CONTENT_COMMAND,
-} from 'lexical';
-import {useEffect} from 'react';
+} from "lexical";
+import { useEffect } from "react";
+
+type Props = Readonly<{
+  maxDepth: number | null | undefined;
+}>;
 
 function getElementNodesInSelection(
-  selection: RangeSelection,
+  selection: RangeSelection
 ): Set<ElementNode> {
   const nodesInSelection = selection.getNodes();
 
@@ -32,11 +37,11 @@ function getElementNodesInSelection(
   }
 
   return new Set(
-    nodesInSelection.map((n) => ($isElementNode(n) ? n : n.getParentOrThrow())),
+    nodesInSelection.map((n) => ($isElementNode(n) ? n : n.getParentOrThrow()))
   );
 }
 
-function shouldPreventIndent(maxDepth: number): boolean {
+function isIndentPermitted(maxDepth: number): boolean {
   const selection = $getSelection();
 
   if (!$isRangeSelection(selection)) {
@@ -56,7 +61,7 @@ function shouldPreventIndent(maxDepth: number): boolean {
 
       if (!$isListNode(parent)) {
         throw new Error(
-          'ListMaxIndentLevelPlugin: A ListItemNode must have a ListNode for a parent.',
+          "ListMaxIndentLevelPlugin: A ListItemNode must have a ListNode for a parent."
         );
       }
 
@@ -64,21 +69,17 @@ function shouldPreventIndent(maxDepth: number): boolean {
     }
   }
 
-  return totalDepth > maxDepth;
+  return totalDepth <= maxDepth;
 }
 
-export default function ListMaxIndentLevelPlugin({
-  maxDepth = 7,
-}: {
-  maxDepth?: number;
-}): null {
+export default function ListMaxIndentLevelPlugin({ maxDepth }: Props): null {
   const [editor] = useLexicalComposerContext();
 
   useEffect(() => {
     return editor.registerCommand(
       INDENT_CONTENT_COMMAND,
-      () => shouldPreventIndent(maxDepth),
-      COMMAND_PRIORITY_CRITICAL,
+      () => !isIndentPermitted(maxDepth ?? 7),
+      COMMAND_PRIORITY_CRITICAL
     );
   }, [editor, maxDepth]);
   return null;

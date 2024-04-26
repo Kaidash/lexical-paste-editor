@@ -423,14 +423,6 @@ i.close {
   background-image: url(lib/images/icons/close.svg);
 }
 
-i.figma {
-  background-image: url(lib/images/icons/figma.svg);
-}
-
-i.poll {
-  background-image: url(lib/images/icons/card-checklist.svg);
-}
-
 i.columns {
   background-image: url(lib/images/icons/3-columns.svg);
 }
@@ -483,10 +475,6 @@ i.redo {
   background-image: url(lib/images/icons/arrow-clockwise.svg);
 }
 
-i.sticky {
-  background-image: url(lib/images/icons/sticky.svg);
-}
-
 i.mic {
   background-image: url(lib/images/icons/mic.svg);
 }
@@ -499,16 +487,8 @@ i.export {
   background-image: url(lib/images/icons/download.svg);
 }
 
-i.diagram-2 {
-  background-image: url(lib/images/icons/diagram-2.svg);
-}
-
 i.user {
   background-image: url(lib/images/icons/user.svg);
-}
-
-i.equation {
-  background-image: url(lib/images/icons/plus-slash-minus.svg);
 }
 
 i.gif {
@@ -1662,15 +1642,6 @@ button.toolbar-item.active i {
 
 .spacer {
   letter-spacing: -2px;
-}
-
-.editor-equation {
-  cursor: default;
-  user-select: none;
-}
-
-.editor-equation.focused {
-  outline: 2px solid rgb(60, 132, 244);
 }
 
 button.item i {

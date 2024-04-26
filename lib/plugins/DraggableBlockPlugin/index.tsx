@@ -5,11 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  *
  */
-import './index.css';
+import "./index.css";
 
-import {useLexicalComposerContext} from '@lexical/react/LexicalComposerContext';
-import {eventFiles} from '@lexical/rich-text';
-import {calculateZoomLevel, mergeRegister} from '@lexical/utils';
+import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
+import { eventFiles } from "@lexical/rich-text";
+import { mergeRegister } from "@lexical/utils";
 import {
   $getNearestNodeFromDOMNode,
   $getNodeByKey,
@@ -19,18 +19,24 @@ import {
   DRAGOVER_COMMAND,
   DROP_COMMAND,
   LexicalEditor,
-} from 'lexical';
-import {DragEvent as ReactDragEvent, useEffect, useRef, useState} from 'react';
-import {createPortal} from 'react-dom';
+} from "lexical";
 
-import {isHTMLElement} from '../../utils/guard';
-import {Point} from '../../utils/point';
-import {Rect} from '../../utils/rect';
+import {
+  DragEvent as ReactDragEvent,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import { createPortal } from "react-dom";
+
+import { isHTMLElement } from "../../utils/guard";
+import { Point } from "../../utils/point";
+import { Rect } from "../../utils/rect";
 
 const SPACE = 4;
 const TARGET_LINE_HALF_HEIGHT = 2;
-const DRAGGABLE_BLOCK_MENU_CLASSNAME = 'draggable-block-menu';
-const DRAG_DATA_FORMAT = 'application/x-lexical-drag-block';
+const DRAGGABLE_BLOCK_MENU_CLASSNAME = "draggable-block-menu";
+const DRAG_DATA_FORMAT = "application/x-lexical-drag-block";
 const TEXT_BOX_HORIZONTAL_PADDING = 28;
 
 const Downward = 1;
@@ -60,36 +66,36 @@ function getCollapsedMargins(elem: HTMLElement): {
 } {
   const getMargin = (
     element: Element | null,
-    margin: 'marginTop' | 'marginBottom',
+    margin: "marginTop" | "marginBottom"
   ): number =>
     element ? parseFloat(window.getComputedStyle(element)[margin]) : 0;
 
-  const {marginTop, marginBottom} = window.getComputedStyle(elem);
+  const { marginTop, marginBottom } = window.getComputedStyle(elem);
   const prevElemSiblingMarginBottom = getMargin(
     elem.previousElementSibling,
-    'marginBottom',
+    "marginBottom"
   );
   const nextElemSiblingMarginTop = getMargin(
     elem.nextElementSibling,
-    'marginTop',
+    "marginTop"
   );
   const collapsedTopMargin = Math.max(
     parseFloat(marginTop),
-    prevElemSiblingMarginBottom,
+    prevElemSiblingMarginBottom
   );
   const collapsedBottomMargin = Math.max(
     parseFloat(marginBottom),
-    nextElemSiblingMarginTop,
+    nextElemSiblingMarginTop
   );
 
-  return {marginBottom: collapsedBottomMargin, marginTop: collapsedTopMargin};
+  return { marginBottom: collapsedBottomMargin, marginTop: collapsedTopMargin };
 }
 
 function getBlockElement(
   anchorElem: HTMLElement,
   editor: LexicalEditor,
   event: MouseEvent,
-  useEdgeAsDefault = false,
+  useEdgeAsDefault = false
 ): HTMLElement | null {
   const anchorElementRect = anchorElem.getBoundingClientRect();
   const topLevelNodeKeys = getTopLevelNodeKeys(editor);
@@ -109,11 +115,9 @@ function getBlockElement(
       ];
 
       if (firstNodeRect && lastNodeRect) {
-        const firstNodeZoom = calculateZoomLevel(firstNode);
-        const lastNodeZoom = calculateZoomLevel(lastNode);
-        if (event.y / firstNodeZoom < firstNodeRect.top) {
+        if (event.y < firstNodeRect.top) {
           blockElem = firstNode;
-        } else if (event.y / lastNodeZoom > lastNodeRect.bottom) {
+        } else if (event.y > lastNodeRect.bottom) {
           blockElem = lastNode;
         }
 
@@ -132,10 +136,10 @@ function getBlockElement(
       if (elem === null) {
         break;
       }
-      const zoom = calculateZoomLevel(elem);
-      const point = new Point(event.x / zoom, event.y / zoom);
+      const point = new Point(event.x, event.y);
       const domRect = Rect.fromDOM(elem);
-      const {marginTop, marginBottom} = getCollapsedMargins(elem);
+      const { marginTop, marginBottom } = getCollapsedMargins(elem);
+
       const rect = domRect.generateNewRect({
         bottom: domRect.bottom + marginBottom,
         left: anchorElementRect.left,
@@ -145,7 +149,7 @@ function getBlockElement(
 
       const {
         result,
-        reason: {isOnTopSide, isOnBottomSide},
+        reason: { isOnTopSide, isOnBottomSide },
       } = rect.contains(point);
 
       if (result) {
@@ -179,11 +183,11 @@ function isOnMenu(element: HTMLElement): boolean {
 function setMenuPosition(
   targetElem: HTMLElement | null,
   floatingElem: HTMLElement,
-  anchorElem: HTMLElement,
+  anchorElem: HTMLElement
 ) {
   if (!targetElem) {
-    floatingElem.style.opacity = '0';
-    floatingElem.style.transform = 'translate(-10000px, -10000px)';
+    floatingElem.style.opacity = "0";
+    floatingElem.style.transform = "translate(-10000px, -10000px)";
     return;
   }
 
@@ -199,18 +203,18 @@ function setMenuPosition(
 
   const left = SPACE;
 
-  floatingElem.style.opacity = '1';
+  floatingElem.style.opacity = "1";
   floatingElem.style.transform = `translate(${left}px, ${top}px)`;
 }
 
 function setDragImage(
   dataTransfer: DataTransfer,
-  draggableBlockElem: HTMLElement,
+  draggableBlockElem: HTMLElement
 ) {
-  const {transform} = draggableBlockElem.style;
+  const { transform } = draggableBlockElem.style;
 
   // Remove dragImage borders
-  draggableBlockElem.style.transform = 'translateZ(0)';
+  draggableBlockElem.style.transform = "translateZ(0)";
   dataTransfer.setDragImage(draggableBlockElem, 0, 0);
 
   setTimeout(() => {
@@ -222,13 +226,14 @@ function setTargetLine(
   targetLineElem: HTMLElement,
   targetBlockElem: HTMLElement,
   mouseY: number,
-  anchorElem: HTMLElement,
+  anchorElem: HTMLElement
 ) {
-  const {top: targetBlockElemTop, height: targetBlockElemHeight} =
+  const { top: targetBlockElemTop, height: targetBlockElemHeight } =
     targetBlockElem.getBoundingClientRect();
-  const {top: anchorTop, width: anchorWidth} =
+  const { top: anchorTop, width: anchorWidth } =
     anchorElem.getBoundingClientRect();
-  const {marginTop, marginBottom} = getCollapsedMargins(targetBlockElem);
+
+  const { marginTop, marginBottom } = getCollapsedMargins(targetBlockElem);
   let lineTop = targetBlockElemTop;
   if (mouseY >= targetBlockElemTop) {
     lineTop += targetBlockElemHeight + marginBottom / 2;
@@ -243,20 +248,20 @@ function setTargetLine(
   targetLineElem.style.width = `${
     anchorWidth - (TEXT_BOX_HORIZONTAL_PADDING - SPACE) * 2
   }px`;
-  targetLineElem.style.opacity = '.4';
+  targetLineElem.style.opacity = ".4";
 }
 
 function hideTargetLine(targetLineElem: HTMLElement | null) {
   if (targetLineElem) {
-    targetLineElem.style.opacity = '0';
-    targetLineElem.style.transform = 'translate(-10000px, -10000px)';
+    targetLineElem.style.opacity = "0";
+    targetLineElem.style.transform = "translate(-10000px, -10000px)";
   }
 }
 
 function useDraggableBlockMenu(
   editor: LexicalEditor,
   anchorElem: HTMLElement,
-  isEditable: boolean,
+  isEditable: boolean
 ): JSX.Element {
   const scrollerElem = anchorElem.parentElement;
 
@@ -287,12 +292,12 @@ function useDraggableBlockMenu(
       setDraggableBlockElem(null);
     }
 
-    scrollerElem?.addEventListener('mousemove', onMouseMove);
-    scrollerElem?.addEventListener('mouseleave', onMouseLeave);
+    scrollerElem?.addEventListener("mousemove", onMouseMove);
+    scrollerElem?.addEventListener("mouseleave", onMouseLeave);
 
     return () => {
-      scrollerElem?.removeEventListener('mousemove', onMouseMove);
-      scrollerElem?.removeEventListener('mouseleave', onMouseLeave);
+      scrollerElem?.removeEventListener("mousemove", onMouseMove);
+      scrollerElem?.removeEventListener("mouseleave", onMouseLeave);
     };
   }, [scrollerElem, anchorElem, editor]);
 
@@ -311,7 +316,7 @@ function useDraggableBlockMenu(
       if (isFileTransfer) {
         return false;
       }
-      const {pageY, target} = event;
+      const { pageY, target } = event;
       if (!isHTMLElement(target)) {
         return false;
       }
@@ -320,12 +325,7 @@ function useDraggableBlockMenu(
       if (targetBlockElem === null || targetLineElem === null) {
         return false;
       }
-      setTargetLine(
-        targetLineElem,
-        targetBlockElem,
-        pageY / calculateZoomLevel(target),
-        anchorElem,
-      );
+      setTargetLine(targetLineElem, targetBlockElem, pageY, anchorElem);
       // Prevent default event to be able to trigger onDrop events
       event.preventDefault();
       return true;
@@ -339,8 +339,8 @@ function useDraggableBlockMenu(
       if (isFileTransfer) {
         return false;
       }
-      const {target, dataTransfer, pageY} = event;
-      const dragData = dataTransfer?.getData(DRAG_DATA_FORMAT) || '';
+      const { target, dataTransfer, pageY } = event;
+      const dragData = dataTransfer?.getData(DRAG_DATA_FORMAT) || "";
       const draggedNode = $getNodeByKey(dragData);
       if (!draggedNode) {
         return false;
@@ -360,7 +360,7 @@ function useDraggableBlockMenu(
         return true;
       }
       const targetBlockElemTop = targetBlockElem.getBoundingClientRect().top;
-      if (pageY / calculateZoomLevel(target) >= targetBlockElemTop) {
+      if (pageY >= targetBlockElemTop) {
         targetNode.insertAfter(draggedNode);
       } else {
         targetNode.insertBefore(draggedNode);
@@ -376,15 +376,15 @@ function useDraggableBlockMenu(
         (event) => {
           return onDragover(event);
         },
-        COMMAND_PRIORITY_LOW,
+        COMMAND_PRIORITY_LOW
       ),
       editor.registerCommand(
         DROP_COMMAND,
         (event) => {
           return onDrop(event);
         },
-        COMMAND_PRIORITY_HIGH,
-      ),
+        COMMAND_PRIORITY_HIGH
+      )
     );
   }, [anchorElem, editor]);
 
@@ -394,7 +394,7 @@ function useDraggableBlockMenu(
       return;
     }
     setDragImage(dataTransfer, draggableBlockElem);
-    let nodeKey = '';
+    let nodeKey = "";
     editor.update(() => {
       const node = $getNearestNodeFromDOMNode(draggableBlockElem);
       if (node) {
@@ -417,12 +417,13 @@ function useDraggableBlockMenu(
         ref={menuRef}
         draggable={true}
         onDragStart={onDragStart}
-        onDragEnd={onDragEnd}>
-        <div className={isEditable ? 'icon' : ''} />
+        onDragEnd={onDragEnd}
+      >
+        <div className={isEditable ? "icon" : ""} />
       </div>
       <div className="draggable-block-target-line" ref={targetLineRef} />
     </>,
-    anchorElem,
+    anchorElem
   );
 }
 

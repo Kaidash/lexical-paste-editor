@@ -6,17 +6,18 @@
  *
  */
 
-import type {Spread} from 'lexical';
+import type { Spread } from "lexical";
 
 import {
   DecoratorNode,
   EditorConfig,
   NodeKey,
   SerializedLexicalNode,
-} from 'lexical';
+} from "lexical";
 
-import {useSharedAutocompleteContext} from '../context/SharedAutocompleteContext';
-import {uuid as UUID} from '../plugins/AutocompletePlugin';
+
+import { useSharedAutocompleteContext } from "../context/SharedAutocompleteContext";
+import { uuid as UUID } from "../plugins/AutocompletePlugin";
 
 declare global {
   interface Navigator {
@@ -41,12 +42,12 @@ export class AutocompleteNode extends DecoratorNode<JSX.Element | null> {
     return new AutocompleteNode(node.__uuid, node.__key);
   }
 
-  static getType(): 'autocomplete' {
-    return 'autocomplete';
+  static getType(): "autocomplete" {
+    return "autocomplete";
   }
 
   static importJSON(
-    serializedNode: SerializedAutocompleteNode,
+    serializedNode: SerializedAutocompleteNode
   ): AutocompleteNode {
     const node = $createAutocompleteNode(serializedNode.uuid);
     return node;
@@ -55,7 +56,7 @@ export class AutocompleteNode extends DecoratorNode<JSX.Element | null> {
   exportJSON(): SerializedAutocompleteNode {
     return {
       ...super.exportJSON(),
-      type: 'autocomplete',
+      type: "autocomplete",
       uuid: this.__uuid,
       version: 1,
     };
@@ -69,13 +70,13 @@ export class AutocompleteNode extends DecoratorNode<JSX.Element | null> {
   updateDOM(
     prevNode: unknown,
     dom: HTMLElement,
-    config: EditorConfig,
+    config: EditorConfig
   ): boolean {
     return false;
   }
 
   createDOM(config: EditorConfig): HTMLElement {
-    return document.createElement('span');
+    return document.createElement("span");
   }
 
   decorate(): JSX.Element | null {
@@ -99,8 +100,8 @@ function AutocompleteComponent(): JSX.Element {
       : window.innerWidth <= 800 && window.innerHeight <= 600;
   // TODO Move to theme
   return (
-    <span style={{color: '#ccc'}} spellCheck="false">
-      {suggestion} {isMobile ? '(SWIPE \u2B95)' : '(TAB)'}
+    <span style={{ color: "#ccc" }} spellCheck="false">
+      {suggestion} {isMobile ? "(SWIPE \u2B95)" : "(TAB)"}
     </span>
   );
 }

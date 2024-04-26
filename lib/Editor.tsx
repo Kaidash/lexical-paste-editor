@@ -1,268 +1,239 @@
-import {useRef, useState} from 'react'
-import {useEffect} from 'react'
-import {useLayoutEffect} from 'react'
+/**
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ */
 
-import './index.css';
+import { AutoFocusPlugin } from "@lexical/react/LexicalAutoFocusPlugin";
+import { CharacterLimitPlugin } from "@lexical/react/LexicalCharacterLimitPlugin";
+// import {CheckListPlugin} from '@lexical/react/LexicalCheckListPlugin';
+import { ClearEditorPlugin } from "@lexical/react/LexicalClearEditorPlugin";
+import LexicalClickableLinkPlugin from "@lexical/react/LexicalClickableLinkPlugin";
+import LexicalErrorBoundary from "@lexical/react/LexicalErrorBoundary";
+import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
+import { HorizontalRulePlugin } from "@lexical/react/LexicalHorizontalRulePlugin";
+import { ListPlugin } from "@lexical/react/LexicalListPlugin";
+import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
+import { TabIndentationPlugin } from "@lexical/react/LexicalTabIndentationPlugin";
+import { TablePlugin } from "@lexical/react/LexicalTablePlugin";
+import { useEffect, useState } from "react";
 
-// import useMediaQuery from './hooks/useMediaQuery'
+import { useSharedHistoryContext } from "./context/SharedHistoryContext";
+import ActionsPlugin from "./plugins/ActionsPlugin";
+import AutocompletePlugin from "./plugins/AutocompletePlugin";
+import AutoLinkPlugin from "./plugins/AutoLinkPlugin";
+import CodeActionMenuPlugin from "./plugins/CodeActionMenuPlugin";
+import CodeHighlightPlugin from "./plugins/CodeHighlightPlugin";
+import CollapsiblePlugin from "./plugins/CollapsiblePlugin";
+import CommentPlugin from "./plugins/CommentPlugin";
+import ComponentPickerPlugin from "./plugins/ComponentPickerPlugin";
+import ContextMenuPlugin from "./plugins/ContextMenuPlugin";
+import DragDropPaste from "./plugins/DragDropPastePlugin";
+import EnterKeyPlugin from "./plugins/EnterKeyPlugin";
+import InsertTextPlugin from "./plugins/InsertTextPlugin";
+import DraggableBlockPlugin from "./plugins/DraggableBlockPlugin";
+import FloatingLinkEditorPlugin from "./plugins/FloatingLinkEditorPlugin";
+import FloatingTextFormatToolbarPlugin from "./plugins/FloatingTextFormatToolbarPlugin";
+import ImagesPlugin from "./plugins/ImagesPlugin";
+import KeywordsPlugin from "./plugins/KeywordsPlugin";
+import { LayoutPlugin } from "./plugins/LayoutPlugin/LayoutPlugin";
+import LinkPlugin from "./plugins/LinkPlugin";
+import ListMaxIndentLevelPlugin from "./plugins/ListMaxIndentLevelPlugin";
+import { MaxLengthPlugin } from "./plugins/MaxLengthPlugin";
+import MentionsPlugin from "./plugins/MentionsPlugin";
+import SpeechToTextPlugin from "./plugins/SpeechToTextPlugin";
+import TabFocusPlugin from "./plugins/TabFocusPlugin";
+import TableCellActionMenuPlugin from "./plugins/TableActionMenuPlugin";
+import TableCellResizer from "./plugins/TableCellResizer";
+import TableOfContentsPlugin from "./plugins/TableOfContentsPlugin";
+import ToolbarPlugin from "./plugins/ToolbarPlugin";
+import InlineImagePlugin from "./plugins/InlineImagePlugin";
+import TreeViewPlugin from "./plugins/TreeViewPlugin";
+import PageBreakPlugin from './plugins/PageBreakPlugin';
 
-import type {EditorState}from 'lexical'
-import {$getSelection, $createTextNode} from 'lexical'
-
-import { mergeRegister } from '@lexical/utils'
-
-import {LexicalComposer } from '@lexical/react/LexicalComposer'
-import {ListPlugin } from '@lexical/react/LexicalListPlugin'
-import {HorizontalRulePlugin} from '@lexical/react/LexicalHorizontalRulePlugin'
-import {ClearEditorPlugin} from '@lexical/react/LexicalClearEditorPlugin'
-import {RichTextPlugin} from '@lexical/react/LexicalRichTextPlugin'
-import {HistoryPlugin} from '@lexical/react/LexicalHistoryPlugin'
-import {OnChangePlugin} from '@lexical/react/LexicalOnChangePlugin'
-import {TablePlugin} from '@lexical/react/LexicalTablePlugin'
-import {CheckListPlugin}  from '@lexical/react/LexicalCheckListPlugin'
-import {MarkdownShortcutPlugin} from '@lexical/react/LexicalMarkdownShortcutPlugin'
-import {TRANSFORMERS} from '@lexical/markdown'
-import {
-  COMMAND_PRIORITY_HIGH,
-  COMMAND_PRIORITY_NORMAL,
-  KEY_DOWN_COMMAND,
-  FOCUS_COMMAND,
-  SELECTION_CHANGE_COMMAND,
-} from 'lexical'
-
-
-
-import {useLexicalComposerContext} from '@lexical/react/LexicalComposerContext'
-import LexicalErrorBoundary from '@lexical/react/LexicalErrorBoundary'
-
-import Nodes from './nodes'
-import EditorTheme from './themes/PlaygroundEditorTheme.ts'
-
-import {Actions} from './Actions'
-import DragDropPaste from './plugins/DragDropPastePlugin'
-import FloatingLinkEditorPlugin from './plugins/FloatingLinkEditorPlugin'
-import LinkPlugin from './plugins/LinkPlugin'
-import ToolbarPlugin from './plugins/ToolbarPlugin'
-import ContentEditable from './ui/ContentEditable'
-import Placeholder from './ui/Placeholder'
-import LexicalAutoLinkPlugin from './plugins/AutoLinkPlugin/index'
-import CodeHighlightPlugin from './plugins/CodeHighlightPlugin'
-import InlineImagePlugin from './plugins/InlineImagePlugin'
-import TableCellResizer from './plugins/TableCellResizer';
-// import CodeActionMenuPlugin from './plugins/CodeActionMenuPlugin'
+import ContentEditable from "./ui/ContentEditable";
+import Placeholder from "./ui/Placeholder";
+import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
+import { DEFAULT_SETTINGS } from "./appSettings";
 
 interface LastPosition {
   key: string,
-  offset: number
 }
 
-const loadContent = () => {
-  // 'empty' editor
-  const value = '{"root":{"children":[{"children":[],"direction":null,"format":"","indent":0,"type":"paragraph","version":1}],"direction":null,"format":"","indent":0,"type":"root","version":1}}'
+export default function Editor({
+  editable = true,
+  startingState,
+  placeholderText = "Enter some text...",
+  pasteText,
+  comments = false,
+  fileIO = false,
+}: {
+  editable?: boolean;
+  startingState?: string;
+  placeholderText?: string;
+  pasteText?: string;
+  comments?: boolean;
+  fileIO?: boolean;
+}): JSX.Element {
+  const { historyState } = useSharedHistoryContext();
+  const {
+    isOnlyPasteEditorMode,
+    isAutocomplete,
+    isMaxLength,
+    isCharLimit,
+    isCharLimitUtf8,
+    isRichText,
+    showTreeView,
+    showTableOfContents,
+    shouldUseLexicalContextMenu,
+    tableCellMerge,
+    tableCellBackgroundColor,
+  } = DEFAULT_SETTINGS;
 
-  return value
-}
-
-
-const InsertTextPlugin = () => {
-  const [editor] = useLexicalComposerContext()
+  const [editor] = useLexicalComposerContext();
+  const [lastPosition, setLastPosition] = useState<LastPosition | undefined>(undefined)
 
   useEffect(() => {
-    editor.update(() => {
-      const selection = $getSelection()
-      console.log(selection, 'asd')
-      // if (selection) {
-      //   selection.insertText('the text I wanted to insert')
-      // }
-    })
-  }, [editor])
+    editor.setEditable(editable);
+    console.log(editor);
+  }, [editable, editor]);
+  useEffect(() => {
 
-  return null
-}
+  }, [startingState, editor]);
 
-const EnterKeyPlugin = ({ pasteText, lastPostition, onFocus }: {
-  pasteText: string
-  lastPostition: LastPosition | null,
-  onFocus: (editorState: { offset: never; key: string }) => void;
-}) => {
-  const [editor] = useLexicalComposerContext()
-  useLayoutEffect(() => {
-    return mergeRegister(
-      editor.registerCommand(
-        KEY_DOWN_COMMAND,
-        (event) => {
-          if (event) {
-            if (event.code !== 'Space') {
-              event.preventDefault()
-            }
-            // editor.setEditable(false)
-            // setTimeout(() => $generateTest(editor), 500)
-            return false
-          }
-          return false
-        },
-        COMMAND_PRIORITY_HIGH
-      ),
-      editor.registerCommand(
-        FOCUS_COMMAND,
-        (event) => {
-          if (event) {
-            console.log(event)
-            return true
-          }
-          return false
-        },
-        COMMAND_PRIORITY_HIGH
-      ),
-      editor.registerCommand(
-        SELECTION_CHANGE_COMMAND,
-        () => {
-          const selection = $getSelection()
-
-          if (selection) {
-            const [node] = selection.getNodes()
-
-            onFocus({
-              key: node.__key,
-              // @ts-ignore:next-line
-              offset: selection.focus ? selection?.focus?.offset : 0,
-            })
-            console.log({
-              key: node.__key,
-              // @ts-ignore
-              offset: selection.focus ? selection?.focus?.offset : 0,
-            })
-          }
-
-          return false
-        },
-        COMMAND_PRIORITY_NORMAL
-      )
-    )
-  }, [editor, onFocus])
-
-  // const putStringToText = (text: string, inputText: string, index: number): string => {
-  //   console.log('11111111')
-  //   console.log(text)
-  //   console.log(inputText)
-  //   console.log(index)
-  //   console.log('11111111')
-  //
-  //   if (index < 0 || index > text.length) {
-  //     return text
-  //   }
-  //
-  //   return  text.substring(0, index) + inputText + text.substring(index + 1)
-  // }
-
-  useEffect( () => {
-    if (pasteText && lastPostition) {
-      editor.focus()
-      editor.update(() => {
-        const node = editor._editorState._nodeMap.get(lastPostition.key)
-        if (node) {
-          // const prevText = node.getTextContent()
-          const selection = $getSelection()
-          console.log(selection && selection.getNodes(), '+0-')
-          if (selection) {
-            // console.log(lastPostition.key, 'lastPostition.key')
-            // console.log(selection, 'selection');
-            selection.insertNodes([$createTextNode(pasteText).setMode('token')])
-          }
-        }
-
-
-      })
-    }
-  }, [pasteText])
-  return null
-}
-
-
-export default function Editor({ pasteText }: {
-  pasteText: string
-}) {
-  const [, setIsLinkEditMode] = useState<boolean>(false);
-
-  const [lastPostition, setLastPosition] = useState<LastPosition | null>(null)
-
-  const [setFloatingAnchorElem] =
-    useState<HTMLDivElement | undefined>(undefined)
-
-  const placeholder = <Placeholder>Enter some rich text...</Placeholder>
-  const initialEditorState = loadContent()
-  const editorStateRef = useRef<EditorState>()
-  const initialConfig = {
-    namespace: 'MyEditor',
-    editorState: initialEditorState,
-    theme: EditorTheme,
-    nodes: [...Nodes],
-    onError: () => {},
-    showTreeView: true,
-  }
-
-
-
-  function handleOnChange(editorState: EditorState) {
-    console.log(editorState._nodeMap)
-    const json = editorState.toJSON()
-    console.log('============')
-    console.log(json)
-    console.log('============')
-    editorStateRef.current = editorState
-  }
-
-  function handleOnFocus(lastPositionProp: LastPosition) {
-    setLastPosition(lastPositionProp)
-  }
+  const placeholder = (
+    <Placeholder>{editable ? placeholderText : ""}</Placeholder>
+  );
+  const [floatingAnchorElem, setFloatingAnchorElem] =
+    useState<HTMLDivElement | null>(null);
+  const [isSmallWidthViewport, setIsSmallWidthViewport] =
+    useState<boolean>(false);
+  const [isLinkEditMode, setIsLinkEditMode] = useState<boolean>(false);
 
   const onRef = (_floatingAnchorElem: HTMLDivElement) => {
     if (_floatingAnchorElem !== null) {
-      // @ts-ignore
-      setFloatingAnchorElem(_floatingAnchorElem)
+      setFloatingAnchorElem(_floatingAnchorElem);
     }
+  };
+
+  function handleOnFocus(position: LastPosition) {
+    setLastPosition(position)
   }
 
+  useEffect(() => {
+    const updateViewPortWidth = () => {
+      const isNextSmallWidthViewport = window.matchMedia(
+        "(max-width: 1025px)"
+      ).matches;
+
+      if (isNextSmallWidthViewport !== isSmallWidthViewport) {
+        setIsSmallWidthViewport(isNextSmallWidthViewport);
+      }
+    };
+    updateViewPortWidth();
+    window.addEventListener("resize", updateViewPortWidth);
+
+    return () => {
+      window.removeEventListener("resize", updateViewPortWidth);
+    };
+  }, [isSmallWidthViewport]);
+
   return (
-    <LexicalComposer initialConfig={initialConfig}>
-      <div className="editor-shell">
-        <ToolbarPlugin setIsLinkEditMode={setIsLinkEditMode}/>
-        <div
-          className="editor-container tree-view">
-          <ClearEditorPlugin/>
-          <LexicalAutoLinkPlugin />
-          <InlineImagePlugin />
-          <CheckListPlugin />
-          <RichTextPlugin
-            contentEditable={
-              <div className="editor-scroller">
-                <div className="editor">
-                  <ContentEditable/>
+    <div className="editor-shell">
+      {isRichText && editable && (
+        <ToolbarPlugin setIsLinkEditMode={setIsLinkEditMode} />
+      )}
+      <div
+        className={`editor-container ${showTreeView ? "tree-view" : ""} ${
+          !isRichText ? "plain-text" : ""
+        } ${!editable ? "rounded-lg": ""}`}
+      >
+        {isMaxLength && <MaxLengthPlugin maxLength={30} />}
+        <DragDropPaste />
+        <AutoFocusPlugin />
+        <ClearEditorPlugin />
+        <ComponentPickerPlugin />
+
+        <MentionsPlugin />
+        <KeywordsPlugin />
+        <SpeechToTextPlugin />
+        <AutoLinkPlugin />
+        {comments && <CommentPlugin providerFactory={undefined} />}
+        {
+          <>
+            {<HistoryPlugin externalHistoryState={historyState} />}
+            <RichTextPlugin
+              contentEditable={
+                <div className="editor-scroller">
+                  <div className="editor" ref={onRef}>
+                    <ContentEditable />
+                  </div>
                 </div>
-              </div>
-            }
-            placeholder={placeholder}
-            ErrorBoundary={LexicalErrorBoundary}
+              }
+              placeholder={placeholder}
+              ErrorBoundary={LexicalErrorBoundary}
+            />
+            { isOnlyPasteEditorMode && (
+              <>
+                <EnterKeyPlugin onFocus={handleOnFocus} />
+                <InsertTextPlugin lastPosition={lastPosition} pasteText={pasteText} />
+              </>
+            )}
+            {/* <MarkdownShortcutPlugin /> */}
+            <CodeHighlightPlugin />
+            <ListPlugin />
+            <PageBreakPlugin />
+            {/* <CheckListPlugin /> */}
+            <ListMaxIndentLevelPlugin maxDepth={7} />
+            <TablePlugin
+              hasCellMerge={tableCellMerge}
+              hasCellBackgroundColor={tableCellBackgroundColor}
+            />
+            <TableCellResizer />
+            <ImagesPlugin />
+            <InlineImagePlugin />
+            <LinkPlugin />
+            {/* <YouTubePlugin /> */}
+            {!editable && <LexicalClickableLinkPlugin />}
+            <HorizontalRulePlugin />
+            <TabFocusPlugin />
+            <TabIndentationPlugin />
+            <CollapsiblePlugin />
+            <LayoutPlugin />
+            {floatingAnchorElem && !isSmallWidthViewport && (
+              <>
+                <DraggableBlockPlugin anchorElem={floatingAnchorElem} />
+                <CodeActionMenuPlugin anchorElem={floatingAnchorElem} />
+                <FloatingLinkEditorPlugin
+                  anchorElem={floatingAnchorElem}
+                  isLinkEditMode={isLinkEditMode}
+                  setIsLinkEditMode={setIsLinkEditMode}
+                />
+                <TableCellActionMenuPlugin
+                  anchorElem={floatingAnchorElem}
+                  cellMerge={true}
+                />
+                <FloatingTextFormatToolbarPlugin
+                  anchorElem={floatingAnchorElem}
+                />
+              </>
+            )}
+          </>
+        }
+        {(isCharLimit || isCharLimitUtf8) && (
+          <CharacterLimitPlugin
+            charset={isCharLimit ? "UTF-16" : "UTF-8"}
+            maxLength={5}
           />
-          {/*<EnterKeyPlugin pasteText={pasteText} lastPostition={lastPostition} onFocus={handleOnFocus} />*/}
-          <OnChangePlugin onChange={handleOnChange}  />
-          <InsertTextPlugin />
-          <HistoryPlugin />
-          <DragDropPaste/>
-          <ListPlugin />
-          <CodeHighlightPlugin />
-          <TablePlugin hasCellMerge={true} hasCellBackgroundColor={true} />
-          <TableCellResizer />
-          <HorizontalRulePlugin />
-          <LinkPlugin />
-          {/*{floatingAnchorElem && && (*/}
-          {/*  <FloatingLinkEditorPlugin isLinkEditMode={true} setIsLinkEditMode={setFloatingAnchorElem} anchorElem={floatingAnchorElem} />*/}
-          {/*)}*/}
-          <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
-          <Actions />
-          {/*<TreeViewPlugin/>*/}
-        </div>
+        )}
+        {isAutocomplete && <AutocompletePlugin />}
+        <div>{showTableOfContents && <TableOfContentsPlugin />}</div>
+        {shouldUseLexicalContextMenu && <ContextMenuPlugin />}
+        {editable && <ActionsPlugin supportFileIO={fileIO} />}
       </div>
-    </LexicalComposer>
-  )
+      {showTreeView && <TreeViewPlugin />}
+    </div>
+  );
 }

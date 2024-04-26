@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  *
  */
-import './index.module.css';
+import './index.css';
 
 import {useLexicalComposerContext} from '@lexical/react/LexicalComposerContext';
 import {useLexicalNodeSelection} from '@lexical/react/useLexicalNodeSelection';
@@ -101,9 +101,7 @@ export class PageBreakNode extends DecoratorNode<JSX.Element> {
     return new PageBreakNode(node.__key);
   }
 
-  // @ts-ignore
   static importJSON(serializedNode: SerializedPageBreakNode): PageBreakNode {
-    console.log(serializedNode);
     return $createPageBreakNode();
   }
 

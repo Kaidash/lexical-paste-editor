@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  *
  */
+import {useEffect} from 'react';
 import {useLexicalComposerContext} from '@lexical/react/LexicalComposerContext';
 import {$insertNodeToNearestRoot, mergeRegister} from '@lexical/utils';
 import {
@@ -14,7 +15,6 @@ import {
   createCommand,
   LexicalCommand,
 } from 'lexical';
-import {useEffect} from 'react';
 
 import {$createPageBreakNode, PageBreakNode} from '../../nodes/PageBreakNode';
 
