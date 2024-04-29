@@ -5,12 +5,21 @@ module.exports = {
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
     'plugin:react-hooks/recommended',
-    "prettier"
+    'prettier'
   ],
   ignorePatterns: ['dist', '.eslintrc.cjs'],
   parser: '@typescript-eslint/parser',
   plugins: ['react-refresh', 'prettier'],
   rules: {
+    'prettier/prettier': [
+      'error',
+      {
+        'endOfLine': 'auto'
+      }
+    ],
+    'no-unused-vars': [
+      'warn',
+    ],
     '@typescript-eslint/ban-ts-comment': 0,
     'react-refresh/only-export-components': [
       'warn',

@@ -6,15 +6,8 @@
  *
  */
 
-import * as React from "react";
-import {
-  createContext,
-  ReactNode,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import * as React from 'react';
+import { createContext, ReactNode, useContext, useEffect, useMemo, useState } from 'react';
 
 type Suggestion = null | string;
 type CallbackFn = (newSuggestion: Suggestion) => void;
@@ -25,18 +18,15 @@ type HookShape = [suggestion: Suggestion, setSuggestion: PublishFn];
 
 const Context: React.Context<ContextShape> = createContext([
   (_cb) => () => {
+    console.log(_cb);
     return;
   },
   (_newSuggestion: Suggestion) => {
+    console.log(_newSuggestion);
     return;
   },
 ]);
-
-export const SharedAutocompleteContext = ({
-  children,
-}: {
-  children: ReactNode;
-}): JSX.Element => {
+export const SharedAutocompleteContext = ({ children }: { children: ReactNode }): JSX.Element => {
   const context: ContextShape = useMemo(() => {
     let suggestion: Suggestion | null = null;
     const listeners: Set<CallbackFn> = new Set();

@@ -1,4 +1,4 @@
-import {useState} from 'react'
+import { useState } from 'react';
 
 const elasticaList = [
   'Air filter change steps:',
@@ -29,46 +29,67 @@ const elasticaList = [
   'Unscrew the item',
   'Engine oil change interval',
   'Breaks',
-  'Manual for transmission'
-]
+  'Manual for transmission',
+];
 
-
-const Note = ({text, onSelect }: {
+const Note = ({
+  text,
+  onSelect,
+}: {
   text: string;
   onSelect: (text: string) => void;
-}): JSX.Element  => {
-  return <span style={{border: '1px solid black', padding: '5px', marginRight: '5px'}} onClick={() => onSelect(text)}>{text}</span>
-}
+}): JSX.Element => {
+  return (
+    <span
+      style={{ border: '1px solid black', padding: '5px', marginRight: '5px' }}
+      onClick={() => onSelect(text)}
+    >
+      {text}
+    </span>
+  );
+};
 
-export function SmallEditor({ onSave }: {
-  onSave: (text: string) => void;
-}) {
-  const [ text, onChangeText] =  useState<string>('')
+export function SmallEditor({ onSave }: { onSave: (text: string) => void }) {
+  const [text, onChangeText] = useState<string>('');
 
   const onSelect = (value: string): void => {
-    onChangeText(value)
-  }
+    onChangeText(value);
+  };
 
   const pushToEditor = (): void => {
-    onSave(text)
-    onChangeText('')
-  }
+    onSave(text);
+    onChangeText('');
+  };
 
   return (
-    <div className="editor-shell" style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
-      <div style={{ marginBottom: '20px'}}>
-        {elasticaList.map((listItem: string): JSX.Element | null => ( text && listItem.toLowerCase().includes(text.toLowerCase())) ? <Note key={listItem} text={listItem} onSelect={onSelect}/> : null  )}
+    <div
+      className="editor-shell"
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+    >
+      <div style={{ marginBottom: '20px' }}>
+        {elasticaList.map((listItem: string): JSX.Element | null =>
+          text && listItem.toLowerCase().includes(text.toLowerCase()) ? (
+            <Note key={listItem} text={listItem} onSelect={onSelect} />
+          ) : null
+        )}
       </div>
       <textarea
-        style={{marginBottom: '20px', width: '300px', height: '150px'}}
+        style={{ marginBottom: '20px', width: '300px', height: '150px' }}
         name="editor"
         id="editor"
         onChange={(event) => onChangeText(event.target.value)}
         value={text}
       />
-      <button style={{ width: '100px'}} onClick={pushToEditor}>Push to editor</button>
+      <button style={{ width: '100px' }} onClick={pushToEditor}>
+        Push to editor
+      </button>
     </div>
-  )
+  );
 }
 
 export default SmallEditor;

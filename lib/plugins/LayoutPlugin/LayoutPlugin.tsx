@@ -6,36 +6,30 @@
  *
  */
 
-import type {
-  ElementNode,
-  LexicalCommand,
-  LexicalNode,
-  NodeKey,
-} from "lexical";
+import type { ElementNode, LexicalCommand, LexicalNode, NodeKey } from 'lexical';
 
-import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
-import { $insertNodeToNearestRoot, mergeRegister } from "@lexical/utils";
+import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
+import { $insertNodeToNearestRoot, mergeRegister } from '@lexical/utils';
 import {
   $createParagraphNode,
   $getNodeByKey,
   COMMAND_PRIORITY_EDITOR,
   createCommand,
-} from "lexical";
-import { useEffect } from "react";
+} from 'lexical';
+import { useEffect } from 'react';
 
 import {
   $createLayoutContainerNode,
   $isLayoutContainerNode,
   LayoutContainerNode,
-} from "../../nodes/LayoutContainerNode";
+} from '../../nodes/LayoutContainerNode';
 import {
   $createLayoutItemNode,
   $isLayoutItemNode,
   LayoutItemNode,
-} from "../../nodes/LayoutItemNode";
+} from '../../nodes/LayoutItemNode';
 
-export const INSERT_LAYOUT_COMMAND: LexicalCommand<string> =
-  createCommand<string>();
+export const INSERT_LAYOUT_COMMAND: LexicalCommand<string> = createCommand<string>();
 
 export const UPDATE_LAYOUT_COMMAND: LexicalCommand<{
   template: string;
@@ -47,7 +41,7 @@ export function LayoutPlugin(): null {
   useEffect(() => {
     if (!editor.hasNodes([LayoutContainerNode, LayoutItemNode])) {
       throw new Error(
-        "LayoutPlugin: LayoutContainerNode, or LayoutItemNode not registered on editor"
+        'LayoutPlugin: LayoutContainerNode, or LayoutItemNode not registered on editor'
       );
     }
 
@@ -60,9 +54,7 @@ export function LayoutPlugin(): null {
             const itemsCount = getItemsCountFromTemplate(template);
 
             for (let i = 0; i < itemsCount; i++) {
-              container.append(
-                $createLayoutItemNode().append($createParagraphNode())
-              );
+              container.append($createLayoutItemNode().append($createParagraphNode()));
             }
 
             $insertNodeToNearestRoot(container);
@@ -84,16 +76,12 @@ export function LayoutPlugin(): null {
             }
 
             const itemsCount = getItemsCountFromTemplate(template);
-            const prevItemsCount = getItemsCountFromTemplate(
-              container.getTemplateColumns()
-            );
+            const prevItemsCount = getItemsCountFromTemplate(container.getTemplateColumns());
 
             // Add or remove extra columns if new template does not match existing one
             if (itemsCount > prevItemsCount) {
               for (let i = prevItemsCount; i < itemsCount; i++) {
-                container.append(
-                  $createLayoutItemNode().append($createParagraphNode())
-                );
+                container.append($createLayoutItemNode().append($createParagraphNode()));
               }
             } else if (itemsCount < prevItemsCount) {
               for (let i = prevItemsCount - 1; i >= itemsCount; i--) {

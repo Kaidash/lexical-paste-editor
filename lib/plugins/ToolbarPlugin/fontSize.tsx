@@ -6,17 +6,16 @@
  *
  */
 
-import "./fontSize.css";
+import './fontSize.css';
 
-import { $patchStyleText } from "@lexical/selection";
-import { $getSelection, LexicalEditor } from "lexical";
-import * as React from "react";
+import { $patchStyleText } from '@lexical/selection';
+import { $getSelection, LexicalEditor } from 'lexical';
+import * as React from 'react';
 
 const MIN_ALLOWED_FONT_SIZE = 8;
 const MAX_ALLOWED_FONT_SIZE = 72;
 const DEFAULT_FONT_SIZE = 15;
 
-// eslint-disable-next-line no-shadow
 enum updateFontSizeType {
   increment = 1,
   decrement,
@@ -111,10 +110,7 @@ export default function FontSize({
           prevFontSize = `${DEFAULT_FONT_SIZE}px`;
         }
         prevFontSize = prevFontSize.slice(0, -2);
-        const nextFontSize = calculateNextFontSize(
-          Number(prevFontSize),
-          updateType
-        );
+        const nextFontSize = calculateNextFontSize(Number(prevFontSize), updateType);
         return `${nextFontSize}px`;
       };
 
@@ -123,7 +119,7 @@ export default function FontSize({
           const selection = $getSelection();
           if (selection !== null) {
             $patchStyleText(selection, {
-              "font-size": newFontSize || getNextFontSize,
+              'font-size': newFontSize || getNextFontSize,
             });
           }
         }
@@ -135,13 +131,13 @@ export default function FontSize({
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     const inputValueNumber = Number(inputValue);
 
-    if (["e", "E", "+", "-"].includes(e.key) || isNaN(inputValueNumber)) {
+    if (['e', 'E', '+', '-'].includes(e.key) || isNaN(inputValueNumber)) {
       e.preventDefault();
-      setInputValue("");
+      setInputValue('');
       return;
     }
 
-    if (e.key === "Enter") {
+    if (e.key === 'Enter') {
       e.preventDefault();
 
       let updatedFontSize = inputValueNumber;
@@ -151,17 +147,14 @@ export default function FontSize({
         updatedFontSize = MIN_ALLOWED_FONT_SIZE;
       }
       setInputValue(String(updatedFontSize));
-      updateFontSizeInSelection(String(updatedFontSize) + "px", null);
+      updateFontSizeInSelection(String(updatedFontSize) + 'px', null);
     }
   };
 
   const handleButtonClick = (updateType: updateFontSizeType) => {
-    if (inputValue !== "") {
-      const nextFontSize = calculateNextFontSize(
-        Number(inputValue),
-        updateType
-      );
-      updateFontSizeInSelection(String(nextFontSize) + "px", null);
+    if (inputValue !== '') {
+      const nextFontSize = calculateNextFontSize(Number(inputValue), updateType);
+      updateFontSizeInSelection(String(nextFontSize) + 'px', null);
     } else {
       updateFontSizeInSelection(null, updateType);
     }
@@ -176,9 +169,7 @@ export default function FontSize({
       <button
         type="button"
         disabled={
-          disabled ||
-          (selectionFontSize !== "" &&
-            Number(inputValue) <= MIN_ALLOWED_FONT_SIZE)
+          disabled || (selectionFontSize !== '' && Number(inputValue) <= MIN_ALLOWED_FONT_SIZE)
         }
         onClick={() => handleButtonClick(updateFontSizeType.decrement)}
         className="toolbar-item font-decrement"
@@ -200,9 +191,7 @@ export default function FontSize({
       <button
         type="button"
         disabled={
-          disabled ||
-          (selectionFontSize !== "" &&
-            Number(inputValue) >= MAX_ALLOWED_FONT_SIZE)
+          disabled || (selectionFontSize !== '' && Number(inputValue) >= MAX_ALLOWED_FONT_SIZE)
         }
         onClick={() => handleButtonClick(updateFontSizeType.increment)}
         className="toolbar-item font-increment"

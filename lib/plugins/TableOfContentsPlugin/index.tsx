@@ -5,25 +5,24 @@
  * LICENSE file in the root directory of this source tree.
  *
  */
-import type { TableOfContentsEntry } from "@lexical/react/LexicalTableOfContents";
-import type { HeadingTagType } from "@lexical/rich-text";
-import type { NodeKey } from "lexical";
+import type { TableOfContentsEntry } from '@lexical/react/LexicalTableOfContents';
+import type { HeadingTagType } from '@lexical/rich-text';
+import type { NodeKey } from 'lexical';
 
-import "./index.css";
+import './index.css';
 
-import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
-import LexicalTableOfContents from "@lexical/react/LexicalTableOfContents";
-import { useEffect, useRef, useState } from "react";
-
+import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
+import LexicalTableOfContents from '@lexical/react/LexicalTableOfContents';
+import { useEffect, useRef, useState } from 'react';
 
 const MARGIN_ABOVE_EDITOR = 624;
 const HEADING_WIDTH = 9;
 
 function indent(tagName: HeadingTagType) {
-  if (tagName === "h2") {
-    return "heading2";
-  } else if (tagName === "h3") {
-    return "heading3";
+  if (tagName === 'h2') {
+    return 'heading2';
+  } else if (tagName === 'h3') {
+    return 'heading3';
   }
 }
 
@@ -48,7 +47,7 @@ function TableOfContentsList({
 }: {
   tableOfContents: Array<TableOfContentsEntry>;
 }): JSX.Element {
-  const [selectedKey, setSelectedKey] = useState("");
+  const [selectedKey, setSelectedKey] = useState('');
   const selectedIndex = useRef(0);
   const [editor] = useLexicalComposerContext();
 
@@ -65,13 +64,8 @@ function TableOfContentsList({
 
   useEffect(() => {
     function scrollCallback() {
-      if (
-        tableOfContents.length !== 0 &&
-        selectedIndex.current < tableOfContents.length - 1
-      ) {
-        let currentHeading = editor.getElementByKey(
-          tableOfContents[selectedIndex.current][0]
-        );
+      if (tableOfContents.length !== 0 && selectedIndex.current < tableOfContents.length - 1) {
+        let currentHeading = editor.getElementByKey(tableOfContents[selectedIndex.current][0]);
         if (currentHeading !== null) {
           if (isHeadingBelowTheTopOfThePage(currentHeading)) {
             //On natural scroll, user is scrolling up
@@ -85,8 +79,7 @@ function TableOfContentsList({
               );
               if (
                 prevHeading !== null &&
-                (isHeadingAboveViewport(prevHeading) ||
-                  isHeadingBelowTheTopOfThePage(prevHeading))
+                (isHeadingAboveViewport(prevHeading) || isHeadingBelowTheTopOfThePage(prevHeading))
               ) {
                 selectedIndex.current--;
               }
@@ -106,8 +99,7 @@ function TableOfContentsList({
               );
               if (
                 nextHeading !== null &&
-                (isHeadingAtTheTopOfThePage(nextHeading) ||
-                  isHeadingAboveViewport(nextHeading))
+                (isHeadingAtTheTopOfThePage(nextHeading) || isHeadingAboveViewport(nextHeading))
               ) {
                 selectedIndex.current++;
               }
@@ -132,8 +124,8 @@ function TableOfContentsList({
       debounceFunction(scrollCallback, 10);
     }
 
-    document.addEventListener("scroll", onScroll);
-    return () => document.removeEventListener("scroll", onScroll);
+    document.addEventListener('scroll', onScroll);
+    return () => document.removeEventListener('scroll', onScroll);
   }, [tableOfContents, editor]);
 
   return (
@@ -149,9 +141,7 @@ function TableOfContentsList({
                   role="button"
                   tabIndex={0}
                 >
-                  {("" + text).length > 20
-                    ? text.substring(0, 20) + "..."
-                    : text}
+                  {('' + text).length > 20 ? text.substring(0, 20) + '...' : text}
                 </div>
                 <br />
               </div>
@@ -160,7 +150,7 @@ function TableOfContentsList({
             return (
               <div
                 className={`normal-heading-wrapper ${
-                  selectedKey === key ? "selected-heading-wrapper" : ""
+                  selectedKey === key ? 'selected-heading-wrapper' : ''
                 }`}
                 key={key}
               >
@@ -171,14 +161,10 @@ function TableOfContentsList({
                   tabIndex={0}
                 >
                   <li
-                    className={`normal-heading ${
-                      selectedKey === key ? "selected-heading" : ""
-                    }
+                    className={`normal-heading ${selectedKey === key ? 'selected-heading' : ''}
                     `}
                   >
-                    {("" + text).length > 27
-                      ? text.substring(0, 27) + "..."
-                      : text}
+                    {('' + text).length > 27 ? text.substring(0, 27) + '...' : text}
                   </li>
                 </div>
               </div>

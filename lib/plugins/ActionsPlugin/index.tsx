@@ -6,56 +6,44 @@
  *
  */
 
-import type { LexicalEditor } from "lexical";
+import type { LexicalEditor } from 'lexical';
 
-import { exportFile, importFile } from "@lexical/file";
-import { useCollaborationContext } from "@lexical/react/LexicalCollaborationContext";
-import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
-import { mergeRegister } from "@lexical/utils";
-import { CONNECTED_COMMAND, TOGGLE_CONNECT_COMMAND } from "@lexical/yjs";
-import {
-  $getRoot,
-  $isParagraphNode,
-  CLEAR_EDITOR_COMMAND,
-  COMMAND_PRIORITY_EDITOR,
-} from "lexical";
+import { exportFile, importFile } from '@lexical/file';
+import { useCollaborationContext } from '@lexical/react/LexicalCollaborationContext';
+import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
+import { mergeRegister } from '@lexical/utils';
+import { CONNECTED_COMMAND, TOGGLE_CONNECT_COMMAND } from '@lexical/yjs';
+import { $getRoot, $isParagraphNode, CLEAR_EDITOR_COMMAND, COMMAND_PRIORITY_EDITOR } from 'lexical';
 
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 
-import useModal from "../../hooks/useModal";
-import Button from "../../ui/Button";
-
+import useModal from '../../hooks/useModal';
+import Button from '../../ui/Button';
 
 async function validateEditorState(editor: LexicalEditor): Promise<void> {
   const stringifiedEditorState = JSON.stringify(editor.getEditorState());
   let response = null;
   try {
-    response = await fetch("http://localhost:1235/validateEditorState", {
+    response = await fetch('http://localhost:1235/validateEditorState', {
       body: stringifiedEditorState,
       headers: {
-        Accept: "application/json",
-        "Content-type": "application/json",
+        Accept: 'application/json',
+        'Content-type': 'application/json',
       },
-      method: "POST",
+      method: 'POST',
     });
   } catch {
     // NO-OP
   }
   if (response !== null && response.status === 403) {
-    throw new Error(
-      "Editor state validation failed! Server did not accept changes."
-    );
+    throw new Error('Editor state validation failed! Server did not accept changes.');
   }
 }
 
-export default function ActionsPlugin({
-  supportFileIO,
-}: {
-  supportFileIO: boolean;
-}): JSX.Element {
+export default function ActionsPlugin({ supportFileIO }: { supportFileIO: boolean }): JSX.Element {
   const [editor] = useLexicalComposerContext();
   const [isEditable, setIsEditable] = useState(() => editor.isEditable());
-  const [isSpeechToText, setIsSpeechToText] = useState(false);
+  // const [isSpeechToText, setIsSpeechToText] = useState(false);
   const [connected, setConnected] = useState(false);
   const [isEditorEmpty, setIsEditorEmpty] = useState(true);
   const [modal, showModal] = useModal();
@@ -79,35 +67,33 @@ export default function ActionsPlugin({
   }, [editor]);
 
   useEffect(() => {
-    return editor.registerUpdateListener(
-      ({ dirtyElements, prevEditorState, tags }) => {
-        // If we are in read only mode, send the editor state
-        // to server and ask for validation if possible.
-        if (
-          !isEditable &&
-          dirtyElements.size > 0 &&
-          !tags.has("historic") &&
-          !tags.has("collaboration")
-        ) {
-          validateEditorState(editor);
-        }
-        editor.getEditorState().read(() => {
-          const root = $getRoot();
-          const children = root.getChildren();
-
-          if (children.length > 1) {
-            setIsEditorEmpty(false);
-          } else {
-            if ($isParagraphNode(children[0])) {
-              const paragraphChildren = children[0].getChildren();
-              setIsEditorEmpty(paragraphChildren.length === 0);
-            } else {
-              setIsEditorEmpty(false);
-            }
-          }
-        });
+    return editor.registerUpdateListener(({ dirtyElements, tags }) => {
+      // If we are in read only mode, send the editor state
+      // to server and ask for validation if possible.
+      if (
+        !isEditable &&
+        dirtyElements.size > 0 &&
+        !tags.has('historic') &&
+        !tags.has('collaboration')
+      ) {
+        validateEditorState(editor);
       }
-    );
+      editor.getEditorState().read(() => {
+        const root = $getRoot();
+        const children = root.getChildren();
+
+        if (children.length > 1) {
+          setIsEditorEmpty(false);
+        } else {
+          if ($isParagraphNode(children[0])) {
+            const paragraphChildren = children[0].getChildren();
+            setIsEditorEmpty(paragraphChildren.length === 0);
+          } else {
+            setIsEditorEmpty(false);
+          }
+        }
+      });
+    });
   }, [editor, isEditable]);
 
   return (
@@ -143,7 +129,7 @@ export default function ActionsPlugin({
             onClick={() =>
               exportFile(editor, {
                 fileName: `Playground ${new Date().toISOString()}`,
-                source: "Playground",
+                source: 'Playground',
               })
             }
             title="Export"
@@ -157,7 +143,7 @@ export default function ActionsPlugin({
         className="action-button clear"
         disabled={isEditorEmpty}
         onClick={() => {
-          showModal("Clear editor", (onClose) => (
+          showModal('Clear editor', (onClose) => (
             <ShowClearDialog editor={editor} onClose={onClose} />
           ));
         }}
@@ -186,14 +172,12 @@ export default function ActionsPlugin({
           onClick={() => {
             editor.dispatchCommand(TOGGLE_CONNECT_COMMAND, !connected);
           }}
-          title={`${
-            connected ? "Disconnect" : "Connect"
-          } Collaborative Editing`}
+          title={`${connected ? 'Disconnect' : 'Connect'} Collaborative Editing`}
           aria-label={`${
-            connected ? "Disconnect from" : "Connect to"
+            connected ? 'Disconnect from' : 'Connect to'
           } a collaborative editing server`}
         >
-          <i className={connected ? "disconnect" : "connect"} />
+          <i className={connected ? 'disconnect' : 'connect'} />
         </button>
       )}
       {modal}
@@ -220,7 +204,7 @@ function ShowClearDialog({
           }}
         >
           Clear
-        </Button>{" "}
+        </Button>{' '}
         <Button
           onClick={() => {
             editor.focus();

@@ -7,9 +7,9 @@
  */
 import './index.css';
 
-import {useLexicalComposerContext} from '@lexical/react/LexicalComposerContext';
-import {useLexicalNodeSelection} from '@lexical/react/useLexicalNodeSelection';
-import {mergeRegister} from '@lexical/utils';
+import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
+import { useLexicalNodeSelection } from '@lexical/react/useLexicalNodeSelection';
+import { mergeRegister } from '@lexical/utils';
 import {
   $getNodeByKey,
   $getSelection,
@@ -26,14 +26,13 @@ import {
   NodeKey,
   SerializedLexicalNode,
 } from 'lexical';
-import {useCallback, useEffect} from 'react';
+import { useCallback, useEffect } from 'react';
 
 export type SerializedPageBreakNode = SerializedLexicalNode;
 
-function PageBreakComponent({nodeKey}: {nodeKey: NodeKey}) {
+function PageBreakComponent({ nodeKey }: { nodeKey: NodeKey }) {
   const [editor] = useLexicalComposerContext();
-  const [isSelected, setSelected, clearSelection] =
-    useLexicalNodeSelection(nodeKey);
+  const [isSelected, setSelected, clearSelection] = useLexicalNodeSelection(nodeKey);
 
   const onDelete = useCallback(
     (event: KeyboardEvent) => {
@@ -47,7 +46,7 @@ function PageBreakComponent({nodeKey}: {nodeKey: NodeKey}) {
       }
       return false;
     },
-    [isSelected, nodeKey],
+    [isSelected, nodeKey]
   );
 
   useEffect(() => {
@@ -67,18 +66,10 @@ function PageBreakComponent({nodeKey}: {nodeKey: NodeKey}) {
 
           return false;
         },
-        COMMAND_PRIORITY_LOW,
+        COMMAND_PRIORITY_LOW
       ),
-      editor.registerCommand(
-        KEY_DELETE_COMMAND,
-        onDelete,
-        COMMAND_PRIORITY_LOW,
-      ),
-      editor.registerCommand(
-        KEY_BACKSPACE_COMMAND,
-        onDelete,
-        COMMAND_PRIORITY_LOW,
-      ),
+      editor.registerCommand(KEY_DELETE_COMMAND, onDelete, COMMAND_PRIORITY_LOW),
+      editor.registerCommand(KEY_BACKSPACE_COMMAND, onDelete, COMMAND_PRIORITY_LOW)
     );
   }, [clearSelection, editor, isSelected, nodeKey, onDelete, setSelected]);
 
@@ -101,7 +92,7 @@ export class PageBreakNode extends DecoratorNode<JSX.Element> {
     return new PageBreakNode(node.__key);
   }
 
-  static importJSON(serializedNode: SerializedPageBreakNode): PageBreakNode {
+  static importJSON(): PageBreakNode {
     return $createPageBreakNode();
   }
 
@@ -153,15 +144,13 @@ export class PageBreakNode extends DecoratorNode<JSX.Element> {
 }
 
 function convertPageBreakElement(): DOMConversionOutput {
-  return {node: $createPageBreakNode()};
+  return { node: $createPageBreakNode() };
 }
 
 export function $createPageBreakNode(): PageBreakNode {
   return new PageBreakNode();
 }
 
-export function $isPageBreakNode(
-  node: LexicalNode | null | undefined,
-): node is PageBreakNode {
+export function $isPageBreakNode(node: LexicalNode | null | undefined): node is PageBreakNode {
   return node instanceof PageBreakNode;
 }
