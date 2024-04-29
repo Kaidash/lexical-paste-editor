@@ -12,6 +12,7 @@ import {
   INSERT_ORDERED_LIST_COMMAND,
   INSERT_UNORDERED_LIST_COMMAND,
   ListNode,
+  ListType,
   REMOVE_LIST_COMMAND,
 } from '@lexical/list';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
@@ -79,6 +80,13 @@ const blockTypeToBlockName = {
   number: 'Numbered List',
   paragraph: 'Normal',
   quote: 'Quote',
+};
+
+const blockTypeWithList = {
+  ...blockTypeToBlockName,
+  number: 'number',
+  bullet: 'bullet',
+  check: 'check',
 };
 
 type TBlockName = keyof typeof blockTypeToBlockName;
@@ -157,11 +165,11 @@ function dropDownActiveClass(active: boolean) {
 
 function BlockFormatDropDown({
   editor,
-  blockType,
+  blockType = 'paragraph',
   // rootType,
   disabled = false,
 }: {
-  blockType: keyof typeof blockTypeToBlockName;
+  blockType: keyof typeof blockTypeWithList;
   rootType: keyof typeof rootTypeToRootName;
   editor: LexicalEditor;
   disabled?: boolean;
@@ -212,7 +220,7 @@ function BlockFormatDropDown({
       disabled={disabled}
       buttonClassName="toolbar-item block-controls"
       buttonIconClassName={'icon block-type ' + blockType}
-      buttonLabel={blockTypeToBlockName[blockType]}
+      buttonLabel={blockTypeWithList[blockType]}
       buttonAriaLabel="Formatting options for text style"
     >
       <DropDownItem
@@ -445,7 +453,7 @@ export default function ToolbarPlugin({
 }): JSX.Element {
   const [editor] = useLexicalComposerContext();
   const [activeEditor, setActiveEditor] = useState(editor);
-  const [blockType, setBlockType] = useState<TBlockName>('paragraph');
+  const [blockType, setBlockType] = useState<TBlockName | ListType>('paragraph');
   const [rootType, setRootType] = useState<keyof typeof rootTypeToRootName>('root');
   // const [selectedElementKey, setSelectedElementKey] = useState<NodeKey | null>(
   //   null
@@ -515,7 +523,7 @@ export default function ToolbarPlugin({
         // setSelectedElementKey(elementKey);
         if ($isListNode(element)) {
           const parentList = $getNearestNodeOfType<ListNode>(anchorNode, ListNode);
-          const type: TBlockName = parentList ? parentList.getListType() : element.getListType();
+          const type: ListType = parentList ? parentList.getListType() : element.getListType();
           setBlockType(type);
         } else {
           const type = $isHeadingNode(element) ? element.getTag() : element.getType();
@@ -697,6 +705,8 @@ export default function ToolbarPlugin({
     }
   }, [editor, isLink, setIsLinkEditMode]);
 
+  // @ts-ignore
+  // @ts-ignore
   return (
     <div className="toolbar">
       <button

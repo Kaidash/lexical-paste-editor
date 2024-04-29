@@ -135,7 +135,7 @@ export default function DropDown({
   buttonAriaLabel?: string;
   buttonClassName: string;
   buttonIconClassName?: string;
-  buttonLabel?: string;
+  buttonLabel?: string | undefined;
   children: ReactNode;
   stopCloseOnClickSelf?: boolean;
 }): JSX.Element {
