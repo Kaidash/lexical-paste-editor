@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Editor, EditorContext } from '../lib/main';
+import { Editor, EditorContext } from '../dist';
 import SmallEditor from './components/SmallEditor.tsx';
 
 import '../lib/index.css';

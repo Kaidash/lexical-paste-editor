@@ -55,6 +55,9 @@ import Placeholder from './ui/Placeholder';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { DEFAULT_SETTINGS } from './appSettings';
 
+import './index.css';
+
+
 interface LastPosition {
   key: string;
 }
