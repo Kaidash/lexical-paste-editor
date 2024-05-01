@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from "react";
 import { Editor, EditorContext } from '../lib/main.tsx';
 import SmallEditor from './components/SmallEditor.tsx';
 
