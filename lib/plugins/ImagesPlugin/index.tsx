@@ -28,7 +28,13 @@ import {
 } from 'lexical';
 import { useEffect, useRef, useState } from 'react';
 
-import { $createImageNode, $isImageNode, ImageNode, ImagePayload, UpdateImagePayload } from '../../nodes/ImageNode';
+import {
+  $createImageNode,
+  $isImageNode,
+  ImageNode,
+  ImagePayload,
+  UpdateImagePayload,
+} from '../../nodes/ImageNode';
 import Button from '../../ui/Button';
 import { DialogActions, DialogButtonsList } from '../../ui/Dialog';
 import FileInput from '../../ui/FileInput';
@@ -113,7 +119,7 @@ export function InsertImageUploadedDialogBody({
       if (file.size <= MAX_FILE_SIZE) {
         reader.readAsDataURL(files[0]);
       } else {
-        console.error('File is too large')
+        console.error('File is too large');
       }
     }
   };
@@ -219,13 +225,21 @@ export default function ImagesPlugin({
           if (isBase64(payload.src)) {
             onUploadImage(payload.src)
               .then((src: string): void => {
-                editor.dispatchCommand(UPDATE_IMAGE_COMMAND, { node: imageNode, src, altText: payload.altText });
+                editor.dispatchCommand(UPDATE_IMAGE_COMMAND, {
+                  node: imageNode,
+                  src,
+                  altText: payload.altText,
+                });
               })
               .catch((error) => {
                 console.error('inserting Image Error', error);
               });
           } else {
-            editor.dispatchCommand(UPDATE_IMAGE_COMMAND, { node: imageNode, src: payload.src, altText: payload.altText });
+            editor.dispatchCommand(UPDATE_IMAGE_COMMAND, {
+              node: imageNode,
+              src: payload.src,
+              altText: payload.altText,
+            });
           }
 
           return true;
@@ -234,9 +248,9 @@ export default function ImagesPlugin({
       ),
       editor.registerCommand<UpdateImagePayload>(
         UPDATE_IMAGE_COMMAND,
-        ({ node, src}) => {
+        ({ node, src }) => {
           if ($isImageNode(node) && src) {
-            node.setSrc(src)
+            node.setSrc(src);
           }
           return true;
         },
@@ -246,7 +260,7 @@ export default function ImagesPlugin({
         DELETE_IMAGE_COMMAND,
         (node) => {
           if (node?.__src) {
-            onRemoveImage(node.__src).then()
+            onRemoveImage(node.__src).then();
           }
           node.remove();
           return true;

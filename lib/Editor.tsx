@@ -72,7 +72,7 @@ export default function Editor({
   pasteText,
   onUpdateText = () => {},
   onUploadImage = async () => '',
-  onRemoveImage = async() => false,
+  onRemoveImage = async () => false,
   // comments = false,
   fileIO = false,
 }: {

@@ -6,23 +6,23 @@ import '../lib/index.css';
 
 function App() {
   const [pasteText, setPasteText] = useState<string>('');
-  const axios = async(): Promise<string> => {
+  const axios = async (): Promise<string> => {
     return 'https://www.wikipedia.org/portal/wikipedia.org/assets/img/Wikipedia-logo-v2@2x.png';
-  }
-  const handleAddImage = async(): Promise<string> => {
+  };
+  const handleAddImage = async (): Promise<string> => {
     const data = await axios();
     console.log(data);
     return data;
-  }
+  };
 
-  const handleRemoveImage = async(src: string): Promise<boolean> => {
+  const handleRemoveImage = async (src: string): Promise<boolean> => {
     console.log(src, 'remove image');
     return true;
-  }
+  };
 
-  const onUpdateText = async(text: string) => {
+  const onUpdateText = async (text: string) => {
     console.log(text, 'HTML');
-  }
+  };
 
   return (
     <div className="bg-gray-50 dark:bg-slate-800 transition-colors duration-500">

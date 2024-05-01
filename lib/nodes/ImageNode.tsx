@@ -203,7 +203,6 @@ export class ImageNode extends DecoratorNode<JSX.Element> {
     writable.__src = src;
   }
 
-
   getAltText(): string {
     return this.__altText;
   }
