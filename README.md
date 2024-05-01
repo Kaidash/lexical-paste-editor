@@ -28,12 +28,8 @@ Using [npm](https://npmjs.com/)
 
 ## Usage
 
-Example:
+See src/App.tsx
 
-```javascript
-<LexicalPasteEditor>
-</LexicalPasteEditor>
-```
 
 ## `<LexicalPasteEditor/> Props`
 
@@ -41,24 +37,10 @@ Below are the available configuration options for the component:
 
 | Name                | Type                           | Description                                                       |
 | ------------------- | ------------------------------ | ----------------------------------------------------------------- |
-| `type`              | `'vertical'` or `'horizontal'` | Specifies the orientation of the timeline (default is horizontal) |
-| `animation`         | `boolean`                      | Enables/disables animation for the timeline (default is `true`)   |
-| `activeLineStyle`   | `CSSProperties`                | Custom CSS properties for styling the active line                 |
-| `passiveLineStyle`  | `CSSProperties`                | Custom CSS properties for styling the passive line                |
-| `animationDuration` | `number`                       | Duration of the animation in milliseconds (default is `6000ms`)   |
-| `responsiveWidth`   | `number`                       | Switch the orientation of the timeline at responsiveWidth         |
-
-## `<LexicalPasteEditor/> Props`
-
-Below are the available configuration options for the component:
-
-| Name       | Type                       | Description                                                        |
-| ---------- | -------------------------- | ------------------------------------------------------------------ |
-| `dotColor` | `string`                   | Color of the dot in the TimelineItem                               |
-| `place`    | `'normal'` or `'opposite'` | Specifies the orientation of the timeline item (default is normal) |
-| `dotIcon`  | `any`                      | Custom content to be placed inside the dot                         |
-| `dotStyle` | `CSSProperties`            | CSS properties to customize the style of the dot                   |
-| `dotText`  | `any`                      | Custom content to be placed above or beside the dot                |
+| `pasteText`         | `string`                       | Text which you paste                                              |
+| `onUpdateText`      | `func`                         | Returns text in HTML format                                       |
+| `onUploadImage`     | `Promise`                      | Returns base64 image item which was uploaded. Return s3/GCS url   |
+| `onRemoveImage`     | `Promise`                      | Returns src deleted image                                         |
 
 ## 🤝Contributing
 

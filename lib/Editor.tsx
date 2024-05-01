@@ -6,19 +6,23 @@
  *
  */
 
+import { useEffect, useState } from 'react';
+import { $generateHtmlFromNodes } from '@lexical/html';
+import type { LexicalEditor } from 'lexical';
 import { AutoFocusPlugin } from '@lexical/react/LexicalAutoFocusPlugin';
 import { CharacterLimitPlugin } from '@lexical/react/LexicalCharacterLimitPlugin';
 // import {CheckListPlugin} from '@lexical/react/LexicalCheckListPlugin';
 import { ClearEditorPlugin } from '@lexical/react/LexicalClearEditorPlugin';
 import LexicalClickableLinkPlugin from '@lexical/react/LexicalClickableLinkPlugin';
 import LexicalErrorBoundary from '@lexical/react/LexicalErrorBoundary';
+import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
 import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
 import { HorizontalRulePlugin } from '@lexical/react/LexicalHorizontalRulePlugin';
 import { ListPlugin } from '@lexical/react/LexicalListPlugin';
 import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
 import { TabIndentationPlugin } from '@lexical/react/LexicalTabIndentationPlugin';
 import { TablePlugin } from '@lexical/react/LexicalTablePlugin';
-import { useEffect, useState } from 'react';
+import type { EditorState } from 'lexical';
 
 import { useSharedHistoryContext } from './context/SharedHistoryContext';
 import ActionsPlugin from './plugins/ActionsPlugin';
@@ -57,7 +61,6 @@ import { DEFAULT_SETTINGS } from './appSettings';
 
 import './index.css';
 
-
 interface LastPosition {
   key: string;
 }
@@ -67,6 +70,9 @@ export default function Editor({
   startingState,
   placeholderText = 'Enter some text...',
   pasteText,
+  onUpdateText = () => {},
+  onUploadImage = async () => '',
+  onRemoveImage = async() => false,
   // comments = false,
   fileIO = false,
 }: {
@@ -76,6 +82,9 @@ export default function Editor({
   pasteText?: string;
   // comments?: boolean;
   fileIO?: boolean;
+  onUpdateText?: (text: string) => void;
+  onUploadImage?: (file: string) => Promise<string>;
+  onRemoveImage?: (src: string) => Promise<boolean>;
 }): JSX.Element {
   const { historyState } = useSharedHistoryContext();
   const {
@@ -94,11 +103,12 @@ export default function Editor({
 
   const [editor] = useLexicalComposerContext();
   const [lastPosition, setLastPosition] = useState<LastPosition | undefined>(undefined);
+  const [html, setHtml] = useState<string>('');
 
   useEffect(() => {
     editor.setEditable(editable);
-    console.log(editor);
   }, [editable, editor]);
+
   useEffect(() => {}, [startingState, editor]);
 
   const placeholder = <Placeholder>{editable ? placeholderText : ''}</Placeholder>;
@@ -115,6 +125,17 @@ export default function Editor({
   function handleOnFocus(position: LastPosition) {
     setLastPosition(position);
   }
+
+  const onChange = (editorState: EditorState, editor: LexicalEditor) => {
+    editor.update(() => {
+      const raw = $generateHtmlFromNodes(editor, null);
+      setHtml(raw);
+    });
+  };
+
+  useEffect(() => {
+    onUpdateText(html);
+  }, [html]);
 
   useEffect(() => {
     const updateViewPortWidth = () => {
@@ -154,6 +175,7 @@ export default function Editor({
         {
           <>
             {<HistoryPlugin externalHistoryState={historyState} />}
+            <OnChangePlugin onChange={onChange} ignoreSelectionChange />
             <RichTextPlugin
               contentEditable={
                 <div className="editor-scroller">
@@ -181,7 +203,7 @@ export default function Editor({
               hasCellBackgroundColor={tableCellBackgroundColor}
             />
             <TableCellResizer />
-            <ImagesPlugin />
+            <ImagesPlugin onUploadImage={onUploadImage} onRemoveImage={onRemoveImage} />
             <InlineImagePlugin />
             <LinkPlugin />
             {/* <YouTubePlugin /> */}
