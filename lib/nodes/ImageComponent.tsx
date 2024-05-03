@@ -6,7 +6,13 @@
  *
  */
 
-import type { BaseSelection, LexicalCommand, LexicalEditor, NodeKey } from 'lexical';
+import {
+  BaseSelection,
+  COMMAND_PRIORITY_HIGH,
+  LexicalCommand,
+  LexicalEditor,
+  NodeKey,
+} from 'lexical';
 
 import './ImageNode.css';
 
@@ -15,7 +21,6 @@ import { AutoFocusPlugin } from '@lexical/react/LexicalAutoFocusPlugin';
 // import { CollaborationPlugin } from "@lexical/react/LexicalCollaborationPlugin";
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import LexicalErrorBoundary from '@lexical/react/LexicalErrorBoundary';
-// import { HashtagPlugin } from "@lexical/react/LexicalHashtagPlugin";
 import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
 import { LexicalNestedComposer } from '@lexical/react/LexicalNestedComposer';
 import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
@@ -49,6 +54,7 @@ import ImageResizer from '../ui/ImageResizer';
 import Placeholder from '../ui/Placeholder';
 import { $isImageNode } from './ImageNode';
 import { DEFAULT_SETTINGS } from '../appSettings';
+import { DELETE_IMAGE_COMMAND } from '../plugins/ImagesPlugin';
 
 const imageCache = new Set();
 
@@ -137,17 +143,13 @@ export default function ImageComponent({
 
   const onDelete = useCallback(
     (payload: KeyboardEvent) => {
-      console.log('ON DELETE');
-      if (isSelected && $isNodeSelection($getSelection())) {
-        const event: KeyboardEvent = payload;
-        event.preventDefault();
-        const node = $getNodeByKey(nodeKey);
-        if ($isImageNode(node)) {
-          // todo remove s3
-          node.remove();
-          return true;
-        }
+      const event: KeyboardEvent = payload;
+      event.preventDefault();
+      const node = $getNodeByKey(nodeKey);
+      if (node && $isImageNode(node)) {
+        editor.dispatchCommand(DELETE_IMAGE_COMMAND, node);
       }
+
       return false;
     },
     [isSelected, nodeKey]
@@ -221,7 +223,6 @@ export default function ImageComponent({
 
   const onRightClick = useCallback(
     (event: MouseEvent): void => {
-      console.log('RIGHT');
       editor.getEditorState().read(() => {
         const latestSelection = $getSelection();
         const domElement = event.target as HTMLElement;
@@ -269,8 +270,8 @@ export default function ImageComponent({
         },
         COMMAND_PRIORITY_LOW
       ),
-      editor.registerCommand(KEY_DELETE_COMMAND, onDelete, COMMAND_PRIORITY_LOW),
-      editor.registerCommand(KEY_BACKSPACE_COMMAND, onDelete, COMMAND_PRIORITY_LOW),
+      editor.registerCommand(KEY_DELETE_COMMAND, onDelete, COMMAND_PRIORITY_HIGH),
+      editor.registerCommand(KEY_BACKSPACE_COMMAND, onDelete, COMMAND_PRIORITY_HIGH),
       editor.registerCommand(KEY_ENTER_COMMAND, onEnter, COMMAND_PRIORITY_LOW),
       editor.registerCommand(KEY_ESCAPE_COMMAND, onEscape, COMMAND_PRIORITY_LOW)
     );
@@ -349,7 +350,6 @@ export default function ImageComponent({
               <AutoFocusPlugin />
               <MentionsPlugin />
               <LinkPlugin />
-              {/* <HashtagPlugin /> */}
               <KeywordsPlugin />
               <HistoryPlugin externalHistoryState={historyState} />
 

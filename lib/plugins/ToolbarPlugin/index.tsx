@@ -705,8 +705,6 @@ export default function ToolbarPlugin({
     }
   }, [editor, isLink, setIsLinkEditMode]);
 
-  // @ts-ignore
-  // @ts-ignore
   return (
     <div className="toolbar">
       <button

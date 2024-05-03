@@ -9,9 +9,8 @@
 @import 'https://fonts.googleapis.com/css?family=Reenie+Beanie';
 
 .editor-shell {
-  margin: 20px auto;
+  margin: 20px 0;
   border-radius: 2px;
-  max-width: 1100px;
   color: #000;
   position: relative;
   line-height: 1.7;
@@ -190,19 +189,19 @@ pre::-webkit-scrollbar-thumb {
 }
 
 #options-button::after {
-  background-image: url(lib/images/icons/gear.svg);
+  background-image: url(@public/images/icons/gear.svg);
 }
 
 #test-recorder-button::after {
-  background-image: url(lib/images/icons/journal-code.svg);
+  background-image: url(@public/images/icons/journal-code.svg);
 }
 
 #paste-log-button::after {
-  background-image: url(lib/images/icons/clipboard.svg);
+  background-image: url(@public/images/icons/clipboard.svg);
 }
 
 #docs-button::after {
-  background-image: url(lib/images/icons/file-earmark-text.svg);
+  background-image: url(@public/images/icons/file-earmark-text.svg);
 }
 
 #test-recorder-button-snapshot {
@@ -210,15 +209,15 @@ pre::-webkit-scrollbar-thumb {
 }
 
 #test-recorder-button-snapshot::after {
-  background-image: url(lib/images/icons/camera.svg);
+  background-image: url(@public/images/icons/camera.svg);
 }
 
 #test-recorder-button-copy::after {
-  background-image: url(lib/images/icons/clipboard.svg);
+  background-image: url(@public/images/icons/clipboard.svg);
 }
 
 #test-recorder-button-download::after {
-  background-image: url(lib/images/icons/download.svg);
+  background-image: url(@public/images/icons/download.svg);
 }
 
 .typeahead-popover {
@@ -330,81 +329,81 @@ pre::-webkit-scrollbar-thumb {
 }
 
 i.palette {
-  background-image: url(lib/images/icons/palette.svg);
+  background-image: url(@public/images/icons/palette.svg);
 }
 
 i.bucket {
-  background-image: url(lib/images/icons/paint-bucket.svg);
+  background-image: url(@public/images/icons/paint-bucket.svg);
 }
 
 i.bold {
-  background-image: url(lib/images/icons/type-bold.svg);
+  background-image: url(@public/images/icons/type-bold.svg);
 }
 
 i.italic {
-  background-image: url(lib/images/icons/type-italic.svg);
+  background-image: url(@public/images/icons/type-italic.svg);
 }
 
 i.clear {
-  background-image: url(lib/images/icons/trash.svg);
+  background-image: url(@public/images/icons/trash.svg);
 }
 
 i.code {
-  background-image: url(lib/images/icons/code.svg);
+  background-image: url(@public/images/icons/code.svg);
 }
 
 i.underline {
-  background-image: url(lib/images/icons/type-underline.svg);
+  background-image: url(@public/images/icons/type-underline.svg);
 }
 
 i.strikethrough {
-  background-image: url(lib/images/icons/type-strikethrough.svg);
+  background-image: url(@public/images/icons/type-strikethrough.svg);
 }
 
 i.subscript {
-  background-image: url(lib/images/icons/type-subscript.svg);
+  background-image: url(@public/images/icons/type-subscript.svg);
 }
 
 i.superscript {
-  background-image: url(lib/images/icons/type-superscript.svg);
+  background-image: url(@public/images/icons/type-superscript.svg);
 }
 
 i.link {
-  background-image: url(lib/images/icons/link.svg);
+  background-image: url(@public/images/icons/link.svg);
 }
 
 i.horizontal-rule {
-  background-image: url(lib/images/icons/horizontal-rule.svg);
+  background-image: url(@public/images/icons/horizontal-rule.svg);
 }
 
 .icon.plus {
-  background-image: url(lib/images/icons/plus.svg);
+  background-image: url(@public/images/icons/plus.svg);
 }
 
 .icon.caret-right {
-  background-image: url(lib/images/icons/caret-right-fill.svg);
+  background-image: url(@public/images/icons/caret-right-fill.svg);
 }
 
 .icon.dropdown-more {
-  background-image: url(lib/images/icons/dropdown-more.svg);
+  background-image: url(@public/images/icons/dropdown-more.svg);
 }
 
 .icon.font-color {
-  background-image: url(lib/images/icons/font-color.svg);
+  background-image: url(@public/images/icons/font-color.svg);
 }
 
 .icon.font-family {
-  background-image: url(lib/images/icons/font-family.svg);
+  background-image: url(@public/images/icons/font-family.svg);
 }
 
 .icon.bg-color {
-  background-image: url(lib/images/icons/bg-color.svg);
+  background-image: url(@public/images/icons/bg-color.svg);
 }
 
 .icon.table {
   background-color: #6c757d;
-  mask-image: url(lib/images/icons/table.svg);
-  -webkit-mask-image: url(lib/images/icons/table.svg);
+  mask-image: url(@public/images/icons/table.svg);
+  -webkit-mask-image: url(@public/images/icons/table.svg);
   mask-repeat: no-repeat;
   -webkit-mask-repeat: no-repeat;
   mask-size: contain;
@@ -412,108 +411,108 @@ i.horizontal-rule {
 }
 
 i.image {
-  background-image: url(lib/images/icons/file-image.svg);
+  background-image: url(@public/images/icons/file-image.svg);
 }
 
 i.table {
-  background-image: url(lib/images/icons/table.svg);
+  background-image: url(@public/images/icons/table.svg);
 }
 
 i.close {
-  background-image: url(lib/images/icons/close.svg);
+  background-image: url(@public/images/icons/close.svg);
 }
 
 i.columns {
-  background-image: url(lib/images/icons/3-columns.svg);
+  background-image: url(@public/images/icons/3-columns.svg);
 }
 
 i.tweet {
-  background-image: url(lib/images/icons/tweet.svg);
+  background-image: url(@public/images/icons/tweet.svg);
 }
 
 i.youtube {
-  background-image: url(lib/images/icons/youtube.svg);
+  background-image: url(@public/images/icons/youtube.svg);
 }
 
 .icon.left-align,
 i.left-align {
-  background-image: url(lib/images/icons/text-left.svg);
+  background-image: url(@public/images/icons/text-left.svg);
 }
 
 .icon.center-align,
 i.center-align {
-  background-image: url(lib/images/icons/text-center.svg);
+  background-image: url(@public/images/icons/text-center.svg);
 }
 
 .icon.right-align,
 i.right-align {
-  background-image: url(lib/images/icons/text-right.svg);
+  background-image: url(@public/images/icons/text-right.svg);
 }
 
 .icon.justify-align,
 i.justify-align {
-  background-image: url(lib/images/icons/justify.svg);
+  background-image: url(@public/images/icons/justify.svg);
 }
 
 i.indent {
-  background-image: url(lib/images/icons/indent.svg);
+  background-image: url(@public/images/icons/indent.svg);
 }
 
 i.markdown {
-  background-image: url(lib/images/icons/markdown.svg);
+  background-image: url(@public/images/icons/markdown.svg);
 }
 
 i.outdent {
-  background-image: url(lib/images/icons/outdent.svg);
+  background-image: url(@public/images/icons/outdent.svg);
 }
 
 i.undo {
-  background-image: url(lib/images/icons/arrow-counterclockwise.svg);
+  background-image: url(@public/images/icons/arrow-counterclockwise.svg);
 }
 
 i.redo {
-  background-image: url(lib/images/icons/arrow-clockwise.svg);
+  background-image: url(@public/images/icons/arrow-clockwise.svg);
 }
 
 i.mic {
-  background-image: url(lib/images/icons/mic.svg);
+  background-image: url(@public/images/icons/mic.svg);
 }
 
 i.import {
-  background-image: url(lib/images/icons/upload.svg);
+  background-image: url(@public/images/icons/upload.svg);
 }
 
 i.export {
-  background-image: url(lib/images/icons/download.svg);
+  background-image: url(@public/images/icons/download.svg);
 }
 
 i.user {
-  background-image: url(lib/images/icons/user.svg);
+  background-image: url(@public/images/icons/user.svg);
 }
 
 i.gif {
-  background-image: url(lib/images/icons/filetype-gif.svg);
+  background-image: url(@public/images/icons/filetype-gif.svg);
 }
 
 i.copy {
-  background-image: url(lib/images/icons/copy.svg);
+  background-image: url(@public/images/icons/copy.svg);
 }
 
 i.success {
-  background-image: url(lib/images/icons/success.svg);
+  background-image: url(@public/images/icons/success.svg);
 }
 
 i.prettier {
-  background-image: url(lib/images/icons/prettier.svg);
+  background-image: url(@public/images/icons/prettier.svg);
 }
 
 i.prettier-error {
-  background-image: url(lib/images/icons/prettier-error.svg);
+  background-image: url(@public/images/icons/prettier-error.svg);
 }
 
 i.page-break,
 .icon.page-break {
-  background-image: url(lib/images/icons/scissors.svg);
+  background-image: url(@public/images/icons/scissors.svg);
 }
 
 .link-editor .button.active,
@@ -558,7 +557,7 @@ i.page-break,
 }
 
 .link-editor div.link-edit {
-  background-image: url(lib/images/icons/pencil-fill.svg);
+  background-image: url(@public/images/icons/pencil-fill.svg);
   background-size: 16px;
   background-position: center;
   background-repeat: no-repeat;
@@ -572,7 +571,7 @@ i.page-break,
 }
 
 .link-editor div.link-trash {
-  background-image: url(lib/images/icons/trash.svg);
+  background-image: url(@public/images/icons/trash.svg);
   background-size: 16px;
   background-position: center;
   background-repeat: no-repeat;
@@ -586,7 +585,7 @@ i.page-break,
 }
 
 .link-editor div.link-cancel {
-  background-image: url(lib/images/icons/close.svg);
+  background-image: url(@public/images/icons/close.svg);
   background-size: 16px;
   background-position: center;
   background-repeat: no-repeat;
@@ -601,7 +600,7 @@ i.page-break,
 }
 
 .link-editor div.link-confirm {
-  background-image: url(lib/images/icons/success-alt.svg);
+  background-image: url(@public/images/icons/success-alt.svg);
   background-size: 16px;
   background-position: center;
   background-repeat: no-repeat;
@@ -661,7 +660,7 @@ i.page-break,
 }
 
 .dropdown {
-  z-index: 100;
+  z-index: 2000;
   display: block;
   position: fixed;
   box-shadow: 0 12px 28px 0 rgba(0, 0, 0, 0.2), 0 2px 4px 0 rgba(0, 0, 0, 0.1),
@@ -740,7 +739,7 @@ i.page-break,
   height: 1px;
 }
 
-@media screen and (max-width: 1100px) {
+@media screen and (max-width: 1400px) {
   .dropdown-button-text {
     display: none !important;
   }
@@ -759,54 +758,54 @@ i.page-break,
 }
 
 .icon.paragraph {
-  background-image: url(lib/images/icons/text-paragraph.svg);
+  background-image: url(@public/images/icons/text-paragraph.svg);
 }
 
 .icon.h1 {
-  background-image: url(lib/images/icons/type-h1.svg);
+  background-image: url(@public/images/icons/type-h1.svg);
 }
 
 .icon.h2 {
-  background-image: url(lib/images/icons/type-h2.svg);
+  background-image: url(@public/images/icons/type-h2.svg);
 }
 
 .icon.h3 {
-  background-image: url(lib/images/icons/type-h3.svg);
+  background-image: url(@public/images/icons/type-h3.svg);
 }
 
 .icon.h4 {
-  background-image: url(lib/images/icons/type-h4.svg);
+  background-image: url(@public/images/icons/type-h4.svg);
 }
 
 .icon.h5 {
-  background-image: url(lib/images/icons/type-h5.svg);
+  background-image: url(@public/images/icons/type-h5.svg);
 }
 
 .icon.h6 {
-  background-image: url(lib/images/icons/type-h6.svg);
+  background-image: url(@public/images/icons/type-h6.svg);
 }
 
 .icon.bullet-list,
 .icon.bullet {
-  background-image: url(lib/images/icons/list-ul.svg);
+  background-image: url(@public/images/icons/list-ul.svg);
 }
 
 .icon.check-list,
 .icon.check {
-  background-image: url(lib/images/icons/square-check.svg);
+  background-image: url(@public/images/icons/square-check.svg);
 }
 
 .icon.numbered-list,
 .icon.number {
-  background-image: url(lib/images/icons/list-ol.svg);
+  background-image: url(@public/images/icons/list-ol.svg);
 }
 
 .icon.quote {
-  background-image: url(lib/images/icons/chat-square-quote.svg);
+  background-image: url(@public/images/icons/chat-square-quote.svg);
 }
 
 .icon.code {
-  background-image: url(lib/images/icons/code.svg);
+  background-image: url(@public/images/icons/code.svg);
 }
 
 .switches {
@@ -964,7 +963,7 @@ i.page-break,
 .editor-shell .editor-image .image-edit-button {
   border: 1px solid rgba(0, 0, 0, 0.3);
   border-radius: 5px;
-  background-image: url(/lib/images/icons/pencil-fill.svg);
+  background-image: url(@public/images/icons/pencil-fill.svg);
   background-size: 16px;
   background-position: center;
   background-repeat: no-repeat;
@@ -1112,46 +1111,6 @@ i.page-break,
   overflow: hidden;
 }
 
-.emoji {
-  color: transparent;
-  caret-color: rgb(5, 5, 5);
-  background-size: 16px 16px;
-  background-position: center;
-  background-repeat: no-repeat;
-  vertical-align: middle;
-  margin: 0 -1px;
-}
-
-.emoji-inner {
-  padding: 0 0.15em;
-}
-
-.emoji-inner::selection {
-  color: transparent;
-  background-color: rgba(150, 150, 150, 0.4);
-}
-
-.emoji-inner::moz-selection {
-  color: transparent;
-  background-color: rgba(150, 150, 150, 0.4);
-}
-
-.emoji.happysmile {
-  background-image: url(images/emoji/1F642.png);
-}
-
-.emoji.veryhappysmile {
-  background-image: url(images/emoji/1F600.png);
-}
-
-.emoji.unhappysmile {
-  background-image: url(images/emoji/1F641.png);
-}
-
-.emoji.heart {
-  background-image: url(images/emoji/2764.png);
-}
-
 .keyword {
   color: rgb(241, 118, 94);
   font-weight: bold;
@@ -1179,51 +1138,51 @@ i.page-break,
 }
 
 .actions i.indent {
-  background-image: url(lib/images/icons/indent.svg);
+  background-image: url(@public/images/icons/indent.svg);
 }
 
 .actions i.outdent {
-  background-image: url(lib/images/icons/outdent.svg);
+  background-image: url(@public/images/icons/outdent.svg);
 }
 
 .actions i.lock {
-  background-image: url(lib/images/icons/lock-fill.svg);
+  background-image: url(@public/images/icons/lock-fill.svg);
 }
 
 .actions i.image {
-  background-image: url(lib/images/icons/file-image.svg);
+  background-image: url(@public/images/icons/file-image.svg);
 }
 
 .actions i.table {
-  background-image: url(lib/images/icons/table.svg);
+  background-image: url(@public/images/icons/table.svg);
 }
 
 .actions i.unlock {
-  background-image: url(lib/images/icons/lock.svg);
+  background-image: url(@public/images/icons/lock.svg);
 }
 
 .actions i.left-align {
-  background-image: url(lib/images/icons/text-left.svg);
+  background-image: url(@public/images/icons/text-left.svg);
 }
 
 .actions i.center-align {
-  background-image: url(lib/images/icons/text-center.svg);
+  background-image: url(@public/images/icons/text-center.svg);
 }
 
 .actions i.right-align {
-  background-image: url(lib/images/icons/text-right.svg);
+  background-image: url(@public/images/icons/text-right.svg);
 }
 
 .actions i.justify-align {
-  background-image: url(lib/images/icons/justify.svg);
+  background-image: url(@public/images/icons/justify.svg);
 }
 
 .actions i.disconnect {
-  background-image: url(lib/images/icons/plug.svg);
+  background-image: url(@public/images/icons/plug.svg);
 }
 
 .actions i.connect {
-  background-image: url(lib/images/icons/plug-fill.svg);
+  background-image: url(@public/images/icons/plug-fill.svg);
 }
 
 .table-cell-action-button-container {
@@ -1252,7 +1211,7 @@ i.chevron-down {
   display: inline-block;
   height: 8px;
   width: 8px;
-  background-image: url(lib/images/icons/chevron-down.svg);
+  background-image: url(@public/images/icons/chevron-down.svg);
 }
 
 .action-button {
@@ -1377,15 +1336,14 @@ button.action-button:disabled {
   display: flex;
   margin-bottom: 1px;
   background: #fff;
-  padding: 4px;
+  padding: 60px 0 0 0;
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
   vertical-align: middle;
   overflow: auto;
-  height: 36px;
   position: sticky;
   top: 0;
-  z-index: 2;
+  z-index: 1102;
 }
 
 button.toolbar-item {

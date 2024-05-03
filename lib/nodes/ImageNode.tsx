@@ -37,6 +37,12 @@ export interface ImagePayload {
   captionsEnabled?: boolean;
 }
 
+export interface UpdateImagePayload {
+  src: string;
+  altText: string;
+  node: ImageNode;
+}
+
 function convertImageElement(domNode: Node): null | DOMConversionOutput {
   const img = domNode as HTMLImageElement;
   if (img.src.startsWith('file:///')) {
@@ -190,6 +196,11 @@ export class ImageNode extends DecoratorNode<JSX.Element> {
 
   getSrc(): string {
     return this.__src;
+  }
+
+  setSrc(src: string): void {
+    const writable = this.getWritable();
+    writable.__src = src;
   }
 
   getAltText(): string {

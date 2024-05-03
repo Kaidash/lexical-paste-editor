@@ -1,3 +1,4 @@
+import path from 'path';
 import react from '@vitejs/plugin-react';
 import { glob } from 'glob';
 import { fileURLToPath } from 'node:url';
@@ -8,6 +9,11 @@ import { libInjectCss } from 'vite-plugin-lib-inject-css';
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  resolve: {
+    alias: {
+      '@public': path.resolve(__dirname, './public'),
+    },
+  },
   plugins: [react(), libInjectCss(), dts({ include: ['lib'] })],
   build: {
     copyPublicDir: false,
