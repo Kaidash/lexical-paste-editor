@@ -24,14 +24,24 @@ import {
   DROP_COMMAND,
   LexicalCommand,
   LexicalEditor,
+  LexicalNode,
 } from 'lexical';
 import { useEffect, useRef, useState } from 'react';
 
-import { $createImageNode, $isImageNode, ImageNode, ImagePayload } from '../../nodes/ImageNode';
+import {
+  $createImageNode,
+  $isImageNode,
+  ImageNode,
+  ImagePayload,
+  UpdateImagePayload,
+} from '../../nodes/ImageNode';
 import Button from '../../ui/Button';
 import { DialogActions, DialogButtonsList } from '../../ui/Dialog';
 import FileInput from '../../ui/FileInput';
 import TextInput from '../../ui/TextInput';
+import isBase64 from '../../utils/isBase64.ts';
+
+const MAX_FILE_SIZE = 3000000;
 
 export type InsertImagePayload = Readonly<ImagePayload>;
 
@@ -40,6 +50,12 @@ const getDOMSelection = (targetWindow: Window | null): Selection | null =>
 
 export const INSERT_IMAGE_COMMAND: LexicalCommand<InsertImagePayload> =
   createCommand('INSERT_IMAGE_COMMAND');
+
+export const UPDATE_IMAGE_COMMAND: LexicalCommand<UpdateImagePayload> =
+  createCommand('UPDATE_IMAGE_COMMAND');
+
+export const DELETE_IMAGE_COMMAND: LexicalCommand<LexicalNode> =
+  createCommand('DELETE_IMAGE_COMMAND');
 
 export function InsertImageUriDialogBody({
   onClick,
@@ -99,7 +115,12 @@ export function InsertImageUploadedDialogBody({
       return '';
     };
     if (files !== null) {
-      reader.readAsDataURL(files[0]);
+      const file = files[0];
+      if (file.size <= MAX_FILE_SIZE) {
+        reader.readAsDataURL(files[0]);
+      } else {
+        console.error('File is too large');
+      }
     }
   };
 
@@ -177,8 +198,12 @@ export function InsertImageDialog({
 
 export default function ImagesPlugin({
   captionsEnabled,
+  onUploadImage = async () => '',
+  onRemoveImage = async () => false,
 }: {
   captionsEnabled?: boolean;
+  onUploadImage: (file: string) => Promise<string>;
+  onRemoveImage: (src: string) => Promise<boolean>;
 }): JSX.Element | null {
   const [editor] = useLexicalComposerContext();
 
@@ -191,12 +216,53 @@ export default function ImagesPlugin({
       editor.registerCommand<InsertImagePayload>(
         INSERT_IMAGE_COMMAND,
         (payload) => {
-          const imageNode = $createImageNode(payload);
+          const imageNode = $createImageNode({ src: '', altText: '' });
           $insertNodes([imageNode]);
           if ($isRootOrShadowRoot(imageNode.getParentOrThrow())) {
             $wrapNodeInElement(imageNode, $createParagraphNode).selectEnd();
           }
 
+          if (isBase64(payload.src)) {
+            onUploadImage(payload.src)
+              .then((src: string): void => {
+                editor.dispatchCommand(UPDATE_IMAGE_COMMAND, {
+                  node: imageNode,
+                  src,
+                  altText: payload.altText,
+                });
+              })
+              .catch((error) => {
+                console.error('inserting Image Error', error);
+              });
+          } else {
+            editor.dispatchCommand(UPDATE_IMAGE_COMMAND, {
+              node: imageNode,
+              src: payload.src,
+              altText: payload.altText,
+            });
+          }
+
+          return true;
+        },
+        COMMAND_PRIORITY_EDITOR
+      ),
+      editor.registerCommand<UpdateImagePayload>(
+        UPDATE_IMAGE_COMMAND,
+        ({ node, src }) => {
+          if ($isImageNode(node) && src) {
+            node.setSrc(src);
+          }
+          return true;
+        },
+        COMMAND_PRIORITY_EDITOR
+      ),
+      editor.registerCommand<ImageNode>(
+        DELETE_IMAGE_COMMAND,
+        (node) => {
+          if (node?.__src) {
+            onRemoveImage(node.__src).then();
+          }
+          node.remove();
           return true;
         },
         COMMAND_PRIORITY_EDITOR
