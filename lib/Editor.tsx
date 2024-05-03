@@ -53,6 +53,7 @@ import ToolbarPlugin from './plugins/ToolbarPlugin';
 import InlineImagePlugin from './plugins/InlineImagePlugin';
 import TreeViewPlugin from './plugins/TreeViewPlugin';
 import PageBreakPlugin from './plugins/PageBreakPlugin';
+import SetInitialValuePlugin from './plugins/SetInitialValuePlugin';
 
 import ContentEditable from './ui/ContentEditable';
 import Placeholder from './ui/Placeholder';
@@ -67,7 +68,7 @@ interface LastPosition {
 
 export default function Editor({
   editable = true,
-  startingState,
+  initHtml,
   placeholderText = 'Enter some text...',
   pasteText,
   onUpdateText = () => {},
@@ -77,7 +78,7 @@ export default function Editor({
   fileIO = false,
 }: {
   editable?: boolean;
-  startingState?: string;
+  initHtml?: string;
   placeholderText?: string;
   pasteText?: string;
   // comments?: boolean;
@@ -108,8 +109,6 @@ export default function Editor({
   useEffect(() => {
     editor.setEditable(editable);
   }, [editable, editor]);
-
-  useEffect(() => {}, [startingState, editor]);
 
   const placeholder = <Placeholder>{editable ? placeholderText : ''}</Placeholder>;
   const [floatingAnchorElem, setFloatingAnchorElem] = useState<HTMLDivElement | null>(null);
@@ -167,6 +166,7 @@ export default function Editor({
         <ClearEditorPlugin />
         <ComponentPickerPlugin />
 
+        {initHtml && <SetInitialValuePlugin initHtml={initHtml} />}
         <MentionsPlugin />
         <KeywordsPlugin />
         <SpeechToTextPlugin />
