@@ -1,4 +1,4 @@
-import './InputDefault.css';
+import './TextInput.css';
 
 import { HTMLInputTypeAttribute } from 'react';
 
