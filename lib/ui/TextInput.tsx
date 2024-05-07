@@ -1,5 +1,3 @@
-
-
 import './InputDefault.css';
 
 import { HTMLInputTypeAttribute } from 'react';
