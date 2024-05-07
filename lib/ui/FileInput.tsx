@@ -6,7 +6,7 @@
  *
  */
 
-import './Input.css';
+import './InputDefault.css';
 
 type Props = Readonly<{
   'data-test-id'?: string;
