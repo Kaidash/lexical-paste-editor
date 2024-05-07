@@ -6,7 +6,7 @@ import {
   NodeKey,
   TextNode,
   SerializedTextNode,
-  LexicalNode
+  LexicalNode,
 } from 'lexical';
 
 export class ExtendedTextNode extends TextNode {
@@ -28,27 +28,27 @@ export class ExtendedTextNode extends TextNode {
       ...importers,
       code: () => ({
         conversion: patchStyleConversion(importers?.code),
-        priority: 1
+        priority: 1,
       }),
       em: () => ({
         conversion: patchStyleConversion(importers?.em),
-        priority: 1
+        priority: 1,
       }),
       span: () => ({
         conversion: patchStyleConversion(importers?.span),
-        priority: 1
+        priority: 1,
       }),
       strong: () => ({
         conversion: patchStyleConversion(importers?.strong),
-        priority: 1
+        priority: 1,
       }),
       sub: () => ({
         conversion: patchStyleConversion(importers?.sub),
-        priority: 1
+        priority: 1,
       }),
       sup: () => ({
         conversion: patchStyleConversion(importers?.sup),
-        priority: 1
+        priority: 1,
       }),
     };
   }
@@ -58,10 +58,7 @@ export class ExtendedTextNode extends TextNode {
   }
 
   isSimpleText() {
-    return (
-      (this.__type === 'text' || this.__type === 'extended-text') &&
-      this.__mode === 0
-    );
+    return (this.__type === 'text' || this.__type === 'extended-text') && this.__mode === 0;
   }
 
   exportJSON(): SerializedTextNode {
@@ -69,7 +66,7 @@ export class ExtendedTextNode extends TextNode {
       ...super.exportJSON(),
       type: 'extended-text',
       version: 1,
-    }
+    };
   }
 }
 
@@ -77,7 +74,9 @@ export function $createExtendedTextNode(text: string): ExtendedTextNode {
   return new ExtendedTextNode(text);
 }
 
-export function $isExtendedTextNode(node: LexicalNode | null | undefined): node is ExtendedTextNode {
+export function $isExtendedTextNode(
+  node: LexicalNode | null | undefined
+): node is ExtendedTextNode {
   return node instanceof ExtendedTextNode;
 }
 
@@ -131,8 +130,7 @@ function patchStyleConversion(
           }
         }
         return result;
-      }
+      },
     };
   };
 }
-

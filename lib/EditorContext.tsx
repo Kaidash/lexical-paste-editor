@@ -14,7 +14,7 @@ export default function EditorContext({ children }: { children: JSX.Element }): 
     nodes: [
       ExtendedTextNode,
       { replace: TextNode, with: (node: TextNode) => new ExtendedTextNode(node.__text) },
-      ...PlaygroundNodes
+      ...PlaygroundNodes,
     ],
     onError: (error: Error) => {
       throw error;

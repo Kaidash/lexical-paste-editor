@@ -7,7 +7,7 @@ export const SetInitialJsonPlugin: React.FC<{ value: string }> = ({ value = '' }
   useLayoutEffect(() => {
     if (editor && value) {
       editor.update(() => {
-        const editorState = editor.parseEditorState(value)
+        const editorState = editor.parseEditorState(value);
         editor.setEditorState(editorState);
       });
     }
