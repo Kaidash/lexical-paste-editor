@@ -5,7 +5,8 @@ import SmallEditor from './components/SmallEditor.tsx';
 import '../lib/index.css';
 
 const textHTML =
-  '<p class="PlaygroundEditorTheme__paragraph" dir="ltr"><span style="white-space: pre-wrap;">Remove part</span></p><p class="PlaygroundEditorTheme__paragraph" dir="ltr"><span style="white-space: pre-wrap;">Engine oil change interval</span></p>';
+  '<p class="PlaygroundEditorTheme__paragraph" dir="ltr"><span style="white-space: pre-wrap;">Engine oil change interval</span><span style="white-space: pre-wrap;">Unscrew the item</span></p>';
+
 function App() {
   const [pasteText, setPasteText] = useState<string>('');
   const axios = async (): Promise<string> => {
