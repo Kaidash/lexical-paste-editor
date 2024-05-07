@@ -23,8 +23,8 @@ function App() {
     return true;
   };
 
-  const onUpdateText = async (text: string) => {
-    console.log(text, 'HTML');
+  const onUpdateText = async () => {
+    // console.log(text, 'HTML');
   };
 
   return (
