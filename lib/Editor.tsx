@@ -204,7 +204,7 @@ export default function Editor({
             />
             <TableCellResizer />
             <ImagesPlugin onUploadImage={onUploadImage} onRemoveImage={onRemoveImage} />
-            <InlineImagePlugin />
+            <InlineImagePlugin onUploadImage={onUploadImage} onRemoveImage={onRemoveImage} />
             <LinkPlugin />
             {/* <YouTubePlugin /> */}
             {!editable && <LexicalClickableLinkPlugin />}

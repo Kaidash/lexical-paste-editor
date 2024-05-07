@@ -63,8 +63,8 @@ import { getSelectedNode } from '../../utils/getSelectedNode';
 import { sanitizeUrl } from '../../utils/url';
 import { INSERT_COLLAPSIBLE_COMMAND } from '../CollapsiblePlugin';
 import { INSERT_PAGE_BREAK } from '../PageBreakPlugin';
-import { InsertImageDialog } from '../ImagesPlugin';
-// import { InsertInlineImageDialog } from "../InlineImagePlugin";
+// import { InsertImageDialog } from '../ImagesPlugin';
+import { InsertInlineImageDialog } from '../InlineImagePlugin';
 import InsertLayoutDialog from '../LayoutPlugin/InsertLayoutDialog';
 import { InsertTableDialog } from '../TablePlugin';
 import FontSize from './fontSize';
@@ -859,31 +859,28 @@ export default function ToolbarPlugin({
             <i className="icon page-break" />
             <span className="text">Page Break</span>
           </DropDownItem>
+          {/*<DropDownItem*/}
+          {/*  onClick={() => {*/}
+          {/*    showModal('Insert Image', (onClose) => (*/}
+          {/*      <InsertImageDialog activeEditor={activeEditor} onClose={onClose} />*/}
+          {/*    ));*/}
+          {/*  }}*/}
+          {/*  className="item"*/}
+          {/*>*/}
+          {/*  <i className="icon image" />*/}
+          {/*  <span className="text">Image</span>*/}
+          {/*</DropDownItem>*/}
           <DropDownItem
             onClick={() => {
-              showModal('Insert Image', (onClose) => (
-                <InsertImageDialog activeEditor={activeEditor} onClose={onClose} />
+              showModal('Insert Inline Image', (onClose) => (
+                <InsertInlineImageDialog activeEditor={activeEditor} onClose={onClose} />
               ));
             }}
             className="item"
           >
             <i className="icon image" />
-            <span className="text">Image</span>
+            <span className="text">Inline Image</span>
           </DropDownItem>
-          {/* <DropDownItem
-              onClick={() => {
-                showModal("Insert Inline Image", (onClose) => (
-                  <InsertInlineImageDialog
-                    activeEditor={activeEditor}
-                    onClose={onClose}
-                  />
-                ));
-              }}
-              className="item"
-            >
-              <i className="icon image" />
-              <span className="text">Inline Image</span>
-            </DropDownItem> */}
 
           <DropDownItem
             onClick={() => {

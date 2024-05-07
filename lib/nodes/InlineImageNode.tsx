@@ -42,6 +42,8 @@ export interface UpdateInlineImagePayload {
   altText?: string;
   showCaption?: boolean;
   position?: Position;
+  src?: string;
+  node?: InlineImageNode;
 }
 
 function convertInlineImageElement(domNode: Node): null | DOMConversionOutput {
@@ -174,6 +176,11 @@ export class InlineImageNode extends DecoratorNode<JSX.Element> {
   setAltText(altText: string): void {
     const writable = this.getWritable();
     writable.__altText = altText;
+  }
+
+  setSrc(src: string): void {
+    const writable = this.getWritable();
+    writable.__src = src;
   }
 
   setWidthAndHeight(width: 'inherit' | number, height: 'inherit' | number): void {

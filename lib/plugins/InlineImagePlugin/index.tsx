@@ -28,6 +28,7 @@ import {
   DROP_COMMAND,
   LexicalCommand,
   LexicalEditor,
+  LexicalNode,
 } from 'lexical';
 import * as React from 'react';
 import { useEffect, useRef, useState } from 'react';
@@ -37,12 +38,14 @@ import {
   $isInlineImageNode,
   InlineImageNode,
   InlineImagePayload,
+  UpdateInlineImagePayload,
 } from '../../nodes/InlineImageNode';
 import Button from '../../ui/Button';
 import { DialogActions } from '../../ui/Dialog';
 import FileInput from '../../ui/FileInput';
 import Select from '../../ui/Select';
 import TextInput from '../../ui/TextInput';
+import isBase64 from '../../utils/isBase64.ts';
 
 export type InsertInlineImagePayload = Readonly<InlineImagePayload>;
 
@@ -51,6 +54,14 @@ const getDOMSelection = (targetWindow: Window | null): Selection | null =>
 
 export const INSERT_INLINE_IMAGE_COMMAND: LexicalCommand<InlineImagePayload> = createCommand(
   'INSERT_INLINE_IMAGE_COMMAND'
+);
+
+export const UPDATE_INLINE_IMAGE_COMMAND: LexicalCommand<UpdateInlineImagePayload> = createCommand(
+  'UPDATE_INLINE_IMAGE_COMMAND'
+);
+
+export const DELETE_INLINE_IMAGE_COMMAND: LexicalCommand<LexicalNode> = createCommand(
+  'DELETE_INLINE_IMAGE_COMMAND'
 );
 
 export function InsertInlineImageDialog({
@@ -163,7 +174,13 @@ export function InsertInlineImageDialog({
   );
 }
 
-export default function InlineImagePlugin(): JSX.Element | null {
+export default function InlineImagePlugin({
+  onUploadImage = async () => '',
+  onRemoveImage = async () => false,
+}: {
+  onUploadImage: (file: string) => Promise<string>;
+  onRemoveImage: (src: string) => Promise<boolean>;
+}): null {
   const [editor] = useLexicalComposerContext();
 
   useEffect(() => {
@@ -175,12 +192,49 @@ export default function InlineImagePlugin(): JSX.Element | null {
       editor.registerCommand<InsertInlineImagePayload>(
         INSERT_INLINE_IMAGE_COMMAND,
         (payload) => {
-          const imageNode = $createInlineImageNode(payload);
+          const imageNode = $createInlineImageNode({ src: '', altText: '' });
           $insertNodes([imageNode]);
           if ($isRootOrShadowRoot(imageNode.getParentOrThrow())) {
             $wrapNodeInElement(imageNode, $createParagraphNode).selectEnd();
           }
 
+          if (isBase64(payload.src)) {
+            onUploadImage(payload.src)
+              .then((src: string): void => {
+                editor.dispatchCommand(UPDATE_INLINE_IMAGE_COMMAND, {
+                  node: imageNode,
+                  src,
+                  altText: payload.altText,
+                });
+              })
+              .catch((error) => {
+                console.error('inserting Image Error', error);
+              });
+          }
+
+          return true;
+        },
+        COMMAND_PRIORITY_EDITOR
+      ),
+      editor.registerCommand<UpdateInlineImagePayload>(
+        UPDATE_INLINE_IMAGE_COMMAND,
+        ({ node, src }) => {
+          console.log('UPDATE_INLINE_IMAGE_COMMAND');
+          if ($isInlineImageNode(node) && src) {
+            node.setSrc(src);
+          }
+          return true;
+        },
+        COMMAND_PRIORITY_EDITOR
+      ),
+      editor.registerCommand<InlineImageNode>(
+        DELETE_INLINE_IMAGE_COMMAND,
+        (node) => {
+          console.log('DELETE_INLINE_IMAGE_COMMAND');
+          if (node?.__src) {
+            onRemoveImage(node.__src).then();
+          }
+          node.remove();
           return true;
         },
         COMMAND_PRIORITY_EDITOR

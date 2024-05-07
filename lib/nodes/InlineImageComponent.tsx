@@ -6,7 +6,7 @@
  *
  */
 import type { Position } from './InlineImageNode';
-import type { BaseSelection, LexicalEditor, NodeKey } from 'lexical';
+import { BaseSelection, LexicalEditor, NodeKey } from 'lexical';
 
 import './InlineImageNode.css';
 
@@ -44,6 +44,7 @@ import Placeholder from '../ui/Placeholder';
 import Select from '../ui/Select';
 import TextInput from '../ui/TextInput';
 import { $isInlineImageNode, InlineImageNode } from './InlineImageNode';
+import { DELETE_INLINE_IMAGE_COMMAND } from '../plugins/InlineImagePlugin';
 
 const imageCache = new Set();
 
@@ -201,15 +202,12 @@ export default function InlineImageComponent({
 
   const onDelete = useCallback(
     (payload: KeyboardEvent) => {
-      console.log('DELETE NODE');
-      if (isSelected && $isNodeSelection($getSelection())) {
-        const event: KeyboardEvent = payload;
-        event.preventDefault();
-        const node = $getNodeByKey(nodeKey);
-        if ($isInlineImageNode(node)) {
-          node.remove();
-          return true;
-        }
+      const event: KeyboardEvent = payload;
+      event.preventDefault();
+      const node = $getNodeByKey(nodeKey);
+      if (node && $isInlineImageNode(node)) {
+        editor.dispatchCommand(DELETE_INLINE_IMAGE_COMMAND, node);
+        return true;
       }
       return false;
     },

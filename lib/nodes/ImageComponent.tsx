@@ -148,6 +148,7 @@ export default function ImageComponent({
       const node = $getNodeByKey(nodeKey);
       if (node && $isImageNode(node)) {
         editor.dispatchCommand(DELETE_IMAGE_COMMAND, node);
+        return true;
       }
 
       return false;
