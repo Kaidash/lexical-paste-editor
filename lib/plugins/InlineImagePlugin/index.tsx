@@ -192,7 +192,7 @@ export default function InlineImagePlugin({
       editor.registerCommand<InsertInlineImagePayload>(
         INSERT_INLINE_IMAGE_COMMAND,
         (payload) => {
-          const imageNode = $createInlineImageNode({ src: '', altText: '' });
+          const imageNode = $createInlineImageNode({ ...payload, src: '', altText: '' });
           $insertNodes([imageNode]);
           if ($isRootOrShadowRoot(imageNode.getParentOrThrow())) {
             $wrapNodeInElement(imageNode, $createParagraphNode).selectEnd();
@@ -219,7 +219,6 @@ export default function InlineImagePlugin({
       editor.registerCommand<UpdateInlineImagePayload>(
         UPDATE_INLINE_IMAGE_COMMAND,
         ({ node, src }) => {
-          console.log('UPDATE_INLINE_IMAGE_COMMAND');
           if ($isInlineImageNode(node) && src) {
             node.setSrc(src);
           }

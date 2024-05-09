@@ -202,12 +202,14 @@ export default function InlineImageComponent({
 
   const onDelete = useCallback(
     (payload: KeyboardEvent) => {
-      const event: KeyboardEvent = payload;
-      event.preventDefault();
-      const node = $getNodeByKey(nodeKey);
-      if (node && $isInlineImageNode(node)) {
-        editor.dispatchCommand(DELETE_INLINE_IMAGE_COMMAND, node);
-        return true;
+      if (isSelected && $isNodeSelection($getSelection())) {
+        const event: KeyboardEvent = payload;
+        event.preventDefault();
+        const node = $getNodeByKey(nodeKey);
+        if (node && $isInlineImageNode(node)) {
+          editor.dispatchCommand(DELETE_INLINE_IMAGE_COMMAND, node);
+          return true;
+        }
       }
       return false;
     },

@@ -9,11 +9,13 @@ const textHTML =
 
 function App() {
   const [pasteText, setPasteText] = useState<string>('');
-  const axios = async (): Promise<string> => {
-    return 'https://www.wikipedia.org/portal/wikipedia.org/assets/img/Wikipedia-logo-v2@2x.png';
+  const axios = async (img: string): Promise<string> => {
+    // const test =
+    //   'https://www.wikipedia.org/portal/wikipedia.org/assets/img/Wikipedia-logo-v2@2x.png';
+    return img;
   };
-  const handleAddImage = async (): Promise<string> => {
-    const data = await axios();
+  const handleAddImage = async (img: string): Promise<string> => {
+    const data = await axios(img);
     console.log(data);
     return data;
   };
