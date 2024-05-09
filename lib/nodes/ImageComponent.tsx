@@ -6,12 +6,7 @@
  *
  */
 
-import {
-  BaseSelection,
-  LexicalCommand,
-  LexicalEditor,
-  NodeKey,
-} from 'lexical';
+import { BaseSelection, LexicalCommand, LexicalEditor, NodeKey } from 'lexical';
 
 import './ImageNode.css';
 
