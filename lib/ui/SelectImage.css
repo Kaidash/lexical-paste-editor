@@ -1,0 +1,41 @@
+.custom-search-select {
+    position: relative;
+    width: 200px;
+    font-family: Arial, sans-serif;
+}
+
+.SelectImage__inputContainer {
+    position: relative;
+}
+
+.SelectImage__optionsContainer {
+    position: absolute;
+    top: 30px;
+    left: 0;
+    right: 0;
+    z-index: 2;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    max-height: 200px;
+    overflow-y: auto;
+    margin-top: 5px;
+    border-radius: 4px;
+}
+
+.SelectImage__option {
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.SelectImage__option img {
+    width: 25%;
+    height: 40px;
+    object-fit: cover;
+    margin-right: 10px;
+}
+
+.SelectImage__option:hover {
+    background-color: #f0f0f0;
+}

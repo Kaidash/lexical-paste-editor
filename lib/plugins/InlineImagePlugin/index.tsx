@@ -45,7 +45,6 @@ import { DialogActions } from '../../ui/Dialog';
 import FileInput from '../../ui/FileInput';
 import Select from '../../ui/Select';
 import TextInput from '../../ui/TextInput';
-import isBase64 from '../../utils/isBase64.ts';
 
 export type InsertInlineImagePayload = Readonly<InlineImagePayload>;
 
@@ -139,7 +138,7 @@ export function InsertInlineImageDialog({
       </div>
 
       <Select
-        style={{ marginBottom: '1em', width: '290px' }}
+        style={{ marginBottom: '1em' }}
         label="Position"
         name="position"
         id="position-select"
@@ -198,7 +197,7 @@ export default function InlineImagePlugin({
             $wrapNodeInElement(imageNode, $createParagraphNode).selectEnd();
           }
 
-          if (isBase64(payload.src)) {
+          if (payload.src) {
             onUploadImage(payload.src)
               .then((src: string): void => {
                 editor.dispatchCommand(UPDATE_INLINE_IMAGE_COMMAND, {
