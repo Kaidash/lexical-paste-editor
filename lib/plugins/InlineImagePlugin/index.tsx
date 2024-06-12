@@ -45,7 +45,6 @@ import { DialogActions } from '../../ui/Dialog';
 import FileInput from '../../ui/FileInput';
 import Select from '../../ui/Select';
 import TextInput from '../../ui/TextInput';
-import isBase64 from '../../utils/isBase64.ts';
 
 export type InsertInlineImagePayload = Readonly<InlineImagePayload>;
 
@@ -139,7 +138,7 @@ export function InsertInlineImageDialog({
       </div>
 
       <Select
-        style={{ marginBottom: '1em', width: '290px' }}
+        style={{ marginBottom: '1em' }}
         label="Position"
         name="position"
         id="position-select"
@@ -192,13 +191,13 @@ export default function InlineImagePlugin({
       editor.registerCommand<InsertInlineImagePayload>(
         INSERT_INLINE_IMAGE_COMMAND,
         (payload) => {
-          const imageNode = $createInlineImageNode({ src: '', altText: '' });
+          const imageNode = $createInlineImageNode({ ...payload, src: '', altText: '' });
           $insertNodes([imageNode]);
           if ($isRootOrShadowRoot(imageNode.getParentOrThrow())) {
             $wrapNodeInElement(imageNode, $createParagraphNode).selectEnd();
           }
 
-          if (isBase64(payload.src)) {
+          if (payload.src) {
             onUploadImage(payload.src)
               .then((src: string): void => {
                 editor.dispatchCommand(UPDATE_INLINE_IMAGE_COMMAND, {
@@ -219,7 +218,6 @@ export default function InlineImagePlugin({
       editor.registerCommand<UpdateInlineImagePayload>(
         UPDATE_INLINE_IMAGE_COMMAND,
         ({ node, src }) => {
-          console.log('UPDATE_INLINE_IMAGE_COMMAND');
           if ($isInlineImageNode(node) && src) {
             node.setSrc(src);
           }

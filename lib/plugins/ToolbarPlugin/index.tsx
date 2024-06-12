@@ -63,11 +63,11 @@ import { getSelectedNode } from '../../utils/getSelectedNode';
 import { sanitizeUrl } from '../../utils/url';
 import { INSERT_COLLAPSIBLE_COMMAND } from '../CollapsiblePlugin';
 import { INSERT_PAGE_BREAK } from '../PageBreakPlugin';
-// import { InsertImageDialog } from '../ImagesPlugin';
-import { InsertInlineImageDialog } from '../InlineImagePlugin';
 import InsertLayoutDialog from '../LayoutPlugin/InsertLayoutDialog';
 import { InsertTableDialog } from '../TablePlugin';
 import FontSize from './fontSize';
+import { Image } from '../../types';
+import { InsertPreselectedImageDialog } from '../PreselectedImagePlugin';
 
 const blockTypeToBlockName = {
   bullet: 'Bulleted List',
@@ -448,7 +448,11 @@ function ElementFormatDropdown({
 
 export default function ToolbarPlugin({
   setIsLinkEditMode,
+  images,
+  onSearchImages = () => {},
 }: {
+  images?: Image[];
+  onSearchImages?: (value: string) => void;
   setIsLinkEditMode: Dispatch<boolean>;
 }): JSX.Element {
   const [editor] = useLexicalComposerContext();
@@ -470,7 +474,7 @@ export default function ToolbarPlugin({
   // const [isStrikethrough, setIsStrikethrough] = useState(false);
   // const [isSubscript, setIsSubscript] = useState(false);
   // const [isSuperscript, setIsSuperscript] = useState(false);
-  const [isCode, setIsCode] = useState(false);
+  // const [isCode, setIsCode] = useState(false);
   const [canUndo, setCanUndo] = useState(false);
   const [canRedo, setCanRedo] = useState(false);
   const [modal, showModal] = useModal();
@@ -500,7 +504,7 @@ export default function ToolbarPlugin({
       setIsBold(selection.hasFormat('bold'));
       setIsItalic(selection.hasFormat('italic'));
       setIsUnderline(selection.hasFormat('underline'));
-      setIsCode(selection.hasFormat('code'));
+      // setIsCode(selection.hasFormat('code'));
       setIsRTL($isParentElementRTL(selection));
 
       // Update links
@@ -795,18 +799,6 @@ export default function ToolbarPlugin({
         </button>
         <button
           disabled={!isEditable}
-          onClick={() => {
-            activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, 'code');
-          }}
-          className={'toolbar-item spaced ' + (isCode ? 'active' : '')}
-          title="Insert code block"
-          type="button"
-          aria-label="Insert code block"
-        >
-          <i className="format code" />
-        </button>
-        <button
-          disabled={!isEditable}
           onClick={insertLink}
           className={'toolbar-item spaced ' + (isLink ? 'active' : '')}
           aria-label="Insert link"
@@ -870,17 +862,35 @@ export default function ToolbarPlugin({
           {/*  <i className="icon image" />*/}
           {/*  <span className="text">Image</span>*/}
           {/*</DropDownItem>*/}
-          <DropDownItem
-            onClick={() => {
-              showModal('Insert Inline Image', (onClose) => (
-                <InsertInlineImageDialog activeEditor={activeEditor} onClose={onClose} />
-              ));
-            }}
-            className="item"
-          >
-            <i className="icon image" />
-            <span className="text">Inline Image</span>
-          </DropDownItem>
+          {/*<DropDownItem*/}
+          {/*  onClick={() => {*/}
+          {/*    showModal('Insert Inline Image', (onClose) => (*/}
+          {/*      <InsertInlineImageDialog activeEditor={activeEditor} onClose={onClose} />*/}
+          {/*    ));*/}
+          {/*  }}*/}
+          {/*  className="item"*/}
+          {/*>*/}
+          {/*  <i className="icon image" />*/}
+          {/*  <span className="text">Inline Image</span>*/}
+          {/*</DropDownItem>*/}
+          {!!images && (
+            <DropDownItem
+              onClick={() => {
+                showModal('Insert Preselect Image', (onClose) => (
+                  <InsertPreselectedImageDialog
+                    images={images}
+                    activeEditor={activeEditor}
+                    onClose={onClose}
+                    onSearchImages={onSearchImages}
+                  />
+                ));
+              }}
+              className="item"
+            >
+              <i className="icon image" />
+              <span className="text">Insert Preselect Image</span>
+            </DropDownItem>
+          )}
 
           <DropDownItem
             onClick={() => {

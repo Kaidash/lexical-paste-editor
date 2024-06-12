@@ -22,8 +22,6 @@ select {
 }
 
 .select {
-  min-width: 160px;
-  max-width: 290px;
   border: 1px solid var(--select-border);
   border-radius: 0.25em;
   padding: 0.25em 0.5em;

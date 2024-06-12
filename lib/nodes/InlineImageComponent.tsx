@@ -5,18 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  *
  */
-import type { Position } from './InlineImageNode';
+
+import { Suspense, useCallback, useEffect, useRef, useState } from 'react';
+
 import { BaseSelection, LexicalEditor, NodeKey } from 'lexical';
-
-import './InlineImageNode.css';
-
-import { AutoFocusPlugin } from '@lexical/react/LexicalAutoFocusPlugin';
-import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
-import LexicalErrorBoundary from '@lexical/react/LexicalErrorBoundary';
-import { LexicalNestedComposer } from '@lexical/react/LexicalNestedComposer';
-import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
-import { useLexicalNodeSelection } from '@lexical/react/useLexicalNodeSelection';
-import { mergeRegister } from '@lexical/utils';
 import {
   $getNodeByKey,
   $getSelection,
@@ -31,20 +23,31 @@ import {
   KEY_ESCAPE_COMMAND,
   SELECTION_CHANGE_COMMAND,
 } from 'lexical';
-import * as React from 'react';
-import { Suspense, useCallback, useEffect, useRef, useState } from 'react';
+
+import { AutoFocusPlugin } from '@lexical/react/LexicalAutoFocusPlugin';
+import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
+import LexicalErrorBoundary from '@lexical/react/LexicalErrorBoundary';
+import { LexicalNestedComposer } from '@lexical/react/LexicalNestedComposer';
+import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
+import { useLexicalNodeSelection } from '@lexical/react/useLexicalNodeSelection';
+import { mergeRegister } from '@lexical/utils';
 
 import useModal from '../hooks/useModal';
 import FloatingTextFormatToolbarPlugin from '../plugins/FloatingTextFormatToolbarPlugin/index';
 import LinkPlugin from '../plugins/LinkPlugin';
+
 import Button from '../ui/Button';
 import ContentEditable from '../ui/ContentEditable';
 import { DialogActions } from '../ui/Dialog';
 import Placeholder from '../ui/Placeholder';
 import Select from '../ui/Select';
-import TextInput from '../ui/TextInput';
 import { $isInlineImageNode, InlineImageNode } from './InlineImageNode';
+
+import type { Position } from './InlineImageNode';
+
 import { DELETE_INLINE_IMAGE_COMMAND } from '../plugins/InlineImagePlugin';
+
+import './InlineImageNode.css';
 
 const imageCache = new Set();
 
@@ -107,7 +110,7 @@ export function UpdateInlineImageDialog({
 }): JSX.Element {
   const editorState = activeEditor.getEditorState();
   const node = editorState.read(() => $getNodeByKey(nodeKey) as InlineImageNode);
-  const [altText, setAltText] = useState(node.getAltText());
+  // const [altText, setAltText] = useState(node.getAltText());
   const [showCaption, setShowCaption] = useState(node.getShowCaption());
   const [position, setPosition] = useState<Position>(node.getPosition());
 
@@ -120,7 +123,8 @@ export function UpdateInlineImageDialog({
   };
 
   const handleOnConfirm = () => {
-    const payload = { altText, position, showCaption };
+    // const payload = { altText, position, showCaption };
+    const payload = { position, showCaption };
     if (node) {
       activeEditor.update(() => {
         node.update(payload);
@@ -131,15 +135,15 @@ export function UpdateInlineImageDialog({
 
   return (
     <>
-      <div style={{ marginBottom: '1em' }}>
-        <TextInput
-          label="Alt Text"
-          placeholder="Descriptive alternative text"
-          onChange={setAltText}
-          value={altText}
-          data-test-id="image-modal-alt-text-input"
-        />
-      </div>
+      {/*<div style={{ marginBottom: '1em' }}>*/}
+      {/*  <TextInput*/}
+      {/*    label="Alt Text"*/}
+      {/*    placeholder="Descriptive alternative text"*/}
+      {/*    onChange={setAltText}*/}
+      {/*    value={altText}*/}
+      {/*    data-test-id="image-modal-alt-text-input"*/}
+      {/*  />*/}
+      {/*</div>*/}
 
       <Select
         style={{ marginBottom: '1em', width: '208px' }}
@@ -202,12 +206,14 @@ export default function InlineImageComponent({
 
   const onDelete = useCallback(
     (payload: KeyboardEvent) => {
-      const event: KeyboardEvent = payload;
-      event.preventDefault();
-      const node = $getNodeByKey(nodeKey);
-      if (node && $isInlineImageNode(node)) {
-        editor.dispatchCommand(DELETE_INLINE_IMAGE_COMMAND, node);
-        return true;
+      if (isSelected && $isNodeSelection($getSelection())) {
+        const event: KeyboardEvent = payload;
+        event.preventDefault();
+        const node = $getNodeByKey(nodeKey);
+        if (node && $isInlineImageNode(node)) {
+          editor.dispatchCommand(DELETE_INLINE_IMAGE_COMMAND, node);
+          return true;
+        }
       }
       return false;
     },

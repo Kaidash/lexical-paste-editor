@@ -58,6 +58,9 @@ import SetInitialValuePlugin from './plugins/SetInitialValuePlugin';
 import ContentEditable from './ui/ContentEditable';
 import Placeholder from './ui/Placeholder';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
+
+import { Image } from './types';
+
 import { DEFAULT_SETTINGS } from './appSettings';
 
 import './index.css';
@@ -65,12 +68,13 @@ import './index.css';
 interface LastPosition {
   key: string;
 }
-
 export default function Editor({
   editable = true,
   initHtml,
   placeholderText = 'Enter some text...',
   pasteText,
+  images,
+  onSearchImages = () => {},
   onUpdateText = () => {},
   onUploadImage = async () => '',
   onRemoveImage = async () => false,
@@ -81,6 +85,8 @@ export default function Editor({
   initHtml?: string;
   placeholderText?: string;
   pasteText?: string;
+  images?: Image[];
+  onSearchImages?: (value: string) => void;
   // comments?: boolean;
   fileIO?: boolean;
   onUpdateText?: (text: string) => void;
@@ -154,7 +160,13 @@ export default function Editor({
 
   return (
     <div className="editor-shell">
-      {isRichText && editable && <ToolbarPlugin setIsLinkEditMode={setIsLinkEditMode} />}
+      {isRichText && editable && (
+        <ToolbarPlugin
+          images={images}
+          onSearchImages={onSearchImages}
+          setIsLinkEditMode={setIsLinkEditMode}
+        />
+      )}
       <div
         className={`editor-container ${showTreeView ? 'tree-view' : ''} ${
           !isRichText ? 'plain-text' : ''

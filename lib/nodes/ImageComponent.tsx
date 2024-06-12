@@ -6,13 +6,7 @@
  *
  */
 
-import {
-  BaseSelection,
-  COMMAND_PRIORITY_HIGH,
-  LexicalCommand,
-  LexicalEditor,
-  NodeKey,
-} from 'lexical';
+import { BaseSelection, LexicalCommand, LexicalEditor, NodeKey } from 'lexical';
 
 import './ImageNode.css';
 
@@ -143,12 +137,14 @@ export default function ImageComponent({
 
   const onDelete = useCallback(
     (payload: KeyboardEvent) => {
-      const event: KeyboardEvent = payload;
-      event.preventDefault();
-      const node = $getNodeByKey(nodeKey);
-      if (node && $isImageNode(node)) {
-        editor.dispatchCommand(DELETE_IMAGE_COMMAND, node);
-        return true;
+      if (isSelected && $isNodeSelection($getSelection())) {
+        const event: KeyboardEvent = payload;
+        event.preventDefault();
+        const node = $getNodeByKey(nodeKey);
+        if (node && $isImageNode(node)) {
+          editor.dispatchCommand(DELETE_IMAGE_COMMAND, node);
+          return true;
+        }
       }
 
       return false;
@@ -271,8 +267,8 @@ export default function ImageComponent({
         },
         COMMAND_PRIORITY_LOW
       ),
-      editor.registerCommand(KEY_DELETE_COMMAND, onDelete, COMMAND_PRIORITY_HIGH),
-      editor.registerCommand(KEY_BACKSPACE_COMMAND, onDelete, COMMAND_PRIORITY_HIGH),
+      editor.registerCommand(KEY_DELETE_COMMAND, onDelete, COMMAND_PRIORITY_LOW),
+      editor.registerCommand(KEY_BACKSPACE_COMMAND, onDelete, COMMAND_PRIORITY_LOW),
       editor.registerCommand(KEY_ENTER_COMMAND, onEnter, COMMAND_PRIORITY_LOW),
       editor.registerCommand(KEY_ESCAPE_COMMAND, onEscape, COMMAND_PRIORITY_LOW)
     );
