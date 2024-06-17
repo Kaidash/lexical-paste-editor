@@ -63,6 +63,9 @@ import { getSelectedNode } from '../../utils/getSelectedNode';
 import { sanitizeUrl } from '../../utils/url';
 import { INSERT_COLLAPSIBLE_COMMAND } from '../CollapsiblePlugin';
 import { INSERT_PAGE_BREAK } from '../PageBreakPlugin';
+import { INSERT_ATTENTION_MESSAGE_COMMAND } from '../AttentionMessagePlugin';
+import { INSERT_DANGER_MESSAGE_COMMAND } from '../DangerMessagePlugin';
+
 import InsertLayoutDialog from '../LayoutPlugin/InsertLayoutDialog';
 import { InsertTableDialog } from '../TablePlugin';
 import FontSize from './fontSize';
@@ -891,6 +894,36 @@ export default function ToolbarPlugin({
               <span className="text">Insert Preselect Image</span>
             </DropDownItem>
           )}
+
+          <DropDownItem
+            onClick={() => {
+              activeEditor.dispatchCommand(INSERT_ATTENTION_MESSAGE_COMMAND, undefined);
+            }}
+            className="item"
+          >
+            <i className="icon attention-circle" />
+            <span className="text">Add Attention Message</span>
+          </DropDownItem>
+
+          <DropDownItem
+            onClick={() => {
+              activeEditor.dispatchCommand(INSERT_DANGER_MESSAGE_COMMAND, undefined);
+            }}
+            className="item"
+          >
+            <i className="icon danger-triangle" />
+            <span className="text">Add Danger Message</span>
+          </DropDownItem>
+
+          {/*<DropDownItem*/}
+          {/*  onClick={() => {*/}
+          {/*    activeEditor.dispatchCommand(INSERT_ATTENTION_MESSAGE, undefined);*/}
+          {/*  }}*/}
+          {/*  className="item"*/}
+          {/*>*/}
+          {/*  <i className="icon page-break" />*/}
+          {/*  <span className="text">Add Important Message</span>*/}
+          {/*</DropDownItem>*/}
 
           <DropDownItem
             onClick={() => {

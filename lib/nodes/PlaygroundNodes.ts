@@ -16,10 +16,12 @@ import { HorizontalRuleNode } from '@lexical/react/LexicalHorizontalRuleNode';
 import { HeadingNode, QuoteNode } from '@lexical/rich-text';
 import { TableCellNode, TableNode, TableRowNode } from '@lexical/table';
 
+import { AutocompleteNode } from './AutocompleteNode';
+import { AttentionMessageNode } from '../plugins/AttentionMessagePlugin/AttentionMessageNode.tsx';
 import { CollapsibleContainerNode } from '../plugins/CollapsiblePlugin/CollapsibleContainerNode';
 import { CollapsibleContentNode } from '../plugins/CollapsiblePlugin/CollapsibleContentNode';
 import { CollapsibleTitleNode } from '../plugins/CollapsiblePlugin/CollapsibleTitleNode';
-import { AutocompleteNode } from './AutocompleteNode';
+import { DangerMessageNode } from '../plugins/DangerMessagePlugin/DangerMessageNode.tsx';
 import { ImageNode } from './ImageNode';
 import { InlineImageNode } from './InlineImageNode';
 import { KeywordNode } from './KeywordNode';
@@ -30,6 +32,8 @@ import { PageBreakNode } from './PageBreakNode';
 import { YouTubeNode } from './YouTubeNode';
 
 const PlaygroundNodes: Array<Klass<LexicalNode>> = [
+  AttentionMessageNode,
+  DangerMessageNode,
   HeadingNode,
   ListNode,
   ListItemNode,

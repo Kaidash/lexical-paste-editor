@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Editor, EditorContext } from '../lib/main.tsx';
+import SmallEditor from './components/SmallEditor.tsx';
 
 import '../lib/index.css';
 
@@ -18,12 +19,7 @@ const images = [
 ];
 
 function App() {
-  const [pasteText] = useState<string>('');
-  // const axios = async (img: string): Promise<string> => {
-  //   // const test =
-  //   //   'https://www.wikipedia.org/portal/wikipedia.org/assets/img/Wikipedia-logo-v2@2x.png';
-  //   return img;
-  // };
+  const [pasteText, setPasteText] = useState<string>('');
 
   const onUpdateText = async () => {
     // console.log(text, 'HTML');
@@ -47,6 +43,7 @@ function App() {
           />
         </>
       </EditorContext>
+      <SmallEditor onSave={(text: string) => setPasteText(text)} />
     </div>
   );
 }

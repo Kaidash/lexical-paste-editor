@@ -228,7 +228,6 @@ export default function InlineImagePlugin({
       editor.registerCommand<InlineImageNode>(
         DELETE_INLINE_IMAGE_COMMAND,
         (node) => {
-          console.log('DELETE_INLINE_IMAGE_COMMAND');
           if (node?.__src) {
             onRemoveImage(node.__src).then();
           }

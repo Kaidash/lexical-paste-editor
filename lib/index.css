@@ -414,6 +414,14 @@ i.image {
   background-image: url(@public/images/icons/file-image.svg);
 }
 
+i.attention-circle {
+  background-image: url(@public/images/icons/alert-circle.svg);
+}
+
+i.danger-triangle {
+  background-image: url(@public/images/icons/alert-triangle.svg);
+}
+
 i.table {
   background-image: url(@public/images/icons/table.svg);
 }
