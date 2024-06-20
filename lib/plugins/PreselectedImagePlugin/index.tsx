@@ -70,6 +70,10 @@ export function InsertPreselectedImageDialog({
     onClose();
   };
 
+  const onFocusSearchInput = () => {
+    onSearchImages('');
+  };
+
   return (
     <>
       <div style={{ marginBottom: '1em' }}>
@@ -77,6 +81,7 @@ export function InsertPreselectedImageDialog({
           label="Search image"
           images={images}
           onSelect={loadImage}
+          onFocus={onFocusSearchInput}
           onChange={onSearchImages}
         />
       </div>

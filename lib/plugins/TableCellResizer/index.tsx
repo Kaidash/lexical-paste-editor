@@ -306,7 +306,8 @@ function TableCellResizer({ editor }: { editor: LexicalEditor }): JSX.Element {
 
   const getResizers = useCallback(() => {
     if (activeCell) {
-      const { height, width, top, left } = activeCell.elem.getBoundingClientRect();
+      const props = activeCell.elem.getBoundingClientRect();
+      const { height, width, top, bottom, left, right } = props;
 
       const styles = {
         bottom: {
@@ -325,6 +326,8 @@ function TableCellResizer({ editor }: { editor: LexicalEditor }): JSX.Element {
           top: `${window.pageYOffset + top}px`,
           width: '10px',
         },
+        height: 0,
+        width: 0,
       };
 
       const tableRect = tableRectRef.current;
@@ -335,11 +338,22 @@ function TableCellResizer({ editor }: { editor: LexicalEditor }): JSX.Element {
           styles[draggingDirection].top = `${window.pageYOffset + mouseCurrentPos.y}px`;
           styles[draggingDirection].height = '3px';
           styles[draggingDirection].width = `${tableRect.width}px`;
+          styles.height =
+            mouseCurrentPos.y <= bottom
+              ? Math.round(height - (bottom - mouseCurrentPos.y))
+              : Math.round(height + (mouseCurrentPos.y - bottom));
+          styles.width = 0;
         } else {
           styles[draggingDirection].top = `${window.pageYOffset + tableRect.top}px`;
           styles[draggingDirection].left = `${window.pageXOffset + mouseCurrentPos.x}px`;
           styles[draggingDirection].width = '3px';
           styles[draggingDirection].height = `${tableRect.height}px`;
+
+          styles.width =
+            mouseCurrentPos.x <= right
+              ? Math.round(width - (right - mouseCurrentPos.x))
+              : Math.round(width + (mouseCurrentPos.x - right));
+          styles.height = 0;
         }
 
         styles[draggingDirection].backgroundColor = '#adf';
@@ -353,6 +367,8 @@ function TableCellResizer({ editor }: { editor: LexicalEditor }): JSX.Element {
       left: null,
       right: null,
       top: null,
+      height: null,
+      width: null,
     };
   }, [activeCell, draggingDirection, mouseCurrentPos]);
 
@@ -366,12 +382,16 @@ function TableCellResizer({ editor }: { editor: LexicalEditor }): JSX.Element {
             className="TableCellResizer__resizer TableCellResizer__ui"
             style={resizerStyles.right || undefined}
             onMouseDown={toggleResize('right')}
-          />
+          >
+            {resizerStyles.width || null}
+          </div>
           <div
             className="TableCellResizer__resizer TableCellResizer__ui"
             style={resizerStyles.bottom || undefined}
             onMouseDown={toggleResize('bottom')}
-          />
+          >
+            {resizerStyles.height || null}
+          </div>
         </>
       )}
     </div>

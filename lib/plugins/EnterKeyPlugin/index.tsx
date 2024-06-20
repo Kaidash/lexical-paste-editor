@@ -20,7 +20,7 @@ const EnterKeyPlugin = ({ onFocus }: { onFocus: (editorState: { key: string }) =
         KEY_DOWN_COMMAND,
         (event: KeyboardEvent): boolean => {
           if (event) {
-            const allowedCharactersRegex: RegExp = /[.,?!:;0-9\s]/;
+            const allowedCharactersRegex: RegExp = /[.,?!:;\s]/;
             if (!allowedCharactersRegex.test(event.key)) {
               event.preventDefault();
             }

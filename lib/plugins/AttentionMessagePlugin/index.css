@@ -1,0 +1,20 @@
+.AttentionMessage__wrapper {
+  background: #fff;
+  border: 3px solid #e6802d;
+  color: #e6802d;
+  font-weight: bold;
+  border-radius: 10px;
+  padding: 5px 10px;
+  margin: 0 10%;
+}
+
+.AttentionMessage__wrapper:before {
+  display: inline-block;
+  float: left;
+  content: '';
+  width: 24px;
+  height: 24px;
+  color: #e6802d;
+  background-image: url(@public/images/icons/alert-circle-orange.svg);
+  margin-right: 15px;
+}

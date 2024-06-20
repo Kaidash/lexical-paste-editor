@@ -12,9 +12,16 @@ interface SelectImageProps {
   images: Image[];
   onChange: (value: string) => void;
   onSelect: (selectedItem: Image) => void;
+  onFocus: () => void;
 }
 
-const SelectImage: React.FC<SelectImageProps> = ({ label, images, onChange, onSelect }) => {
+const SelectImage: React.FC<SelectImageProps> = ({
+  label,
+  images,
+  onChange,
+  onFocus,
+  onSelect,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -43,6 +50,7 @@ const SelectImage: React.FC<SelectImageProps> = ({ label, images, onChange, onSe
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
+
   return (
     <div className="Input__wrapper SelectImage__wrapper" ref={dropdownRef}>
       <label className="Input__label">{label}</label>
@@ -52,6 +60,7 @@ const SelectImage: React.FC<SelectImageProps> = ({ label, images, onChange, onSe
           type="text"
           placeholder="Search..."
           value={searchTerm}
+          onFocus={onFocus}
           onChange={handleInputChange}
         />
         {isOpen && (

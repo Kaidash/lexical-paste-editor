@@ -26,6 +26,8 @@ import type { EditorState } from 'lexical';
 
 import { useSharedHistoryContext } from './context/SharedHistoryContext';
 import ActionsPlugin from './plugins/ActionsPlugin';
+import AttentionMessagePlugin from './plugins/AttentionMessagePlugin';
+import DangerMessagePlugin from './plugins/DangerMessagePlugin';
 import AutocompletePlugin from './plugins/AutocompletePlugin';
 import AutoLinkPlugin from './plugins/AutoLinkPlugin';
 import CollapsiblePlugin from './plugins/CollapsiblePlugin';
@@ -183,6 +185,9 @@ export default function Editor({
         <KeywordsPlugin />
         <SpeechToTextPlugin />
         <AutoLinkPlugin />
+        <AttentionMessagePlugin />
+        <DangerMessagePlugin />
+
         {/*{comments && <CommentPlugin providerFactory={undefined} />}*/}
         {
           <>
