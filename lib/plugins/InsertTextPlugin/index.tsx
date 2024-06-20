@@ -24,7 +24,6 @@ const InsertTextPlugin = ({
         if (node) {
           // const prevText = node.getTextContent()
           const selection = $getSelection();
-          console.log(selection && selection.getNodes(), '+0-');
           if (selection) {
             // console.log(lastPostition.key, 'lastPostition.key')
             // console.log(selection, 'selection');
