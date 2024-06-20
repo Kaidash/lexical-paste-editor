@@ -35,13 +35,15 @@ See src/App.tsx
 
 Below are the available configuration options for the component:
 
-| Name            | Type                           | Description                                                     |
-|-----------------| ------------------------------ |-----------------------------------------------------------------|
-| `pasteText`     | `string`                       | Text which you paste                                            |
-| `initHtml`      | `string`                       | Restore html text in the editor                                 |
-| `onUpdateText`  | `func`                         | Returns text in HTML format                                     |
-| `onUploadImage` | `Promise`                      | Returns base64 image item which was uploaded. Return s3/GCS url |
-| `onRemoveImage` | `Promise`                      | Returns src deleted image                                       |
+| Name             | Type      | Description                                                     |
+|------------------|-----------|-----------------------------------------------------------------|
+| `pasteText`      | `string`  | Text which you paste                                            |
+| `initHtml`       | `string`  | Restore html text in the editor                                 |
+| `images`         | `array`   | Images list for paste in the document                           |
+| `onSearchImages` | `Promise` | Search images list by name                                      |
+| `onUpdateText`   | `func`    | Returns text in HTML format                                     |
+| `onUploadImage`  | `Promise` | Returns base64 image item which was uploaded. Return s3/GCS url |
+| `onRemoveImage`  | `Promise` | Returns src deleted image                                       |
 
 ## 🤝Contributing
 
