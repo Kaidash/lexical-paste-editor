@@ -47,7 +47,13 @@ export interface UpdateInlineImagePayload {
 }
 
 export const isPosition = (value: string | null | undefined): value is Position => {
-  return value === 'left' || value === 'right' || value === 'full' || value === undefined || value === null;
+  return (
+    value === 'left' ||
+    value === 'right' ||
+    value === 'full' ||
+    value === undefined ||
+    value === null
+  );
 };
 
 function convertInlineImageElement(domNode: Node): null | DOMConversionOutput {
