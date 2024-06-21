@@ -1,4 +1,6 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
+import debounce from 'lodash-es/debounce';
+
 import { Image } from '../types';
 import './SelectImage.css';
 
@@ -21,12 +23,6 @@ const SelectImage: React.FC<SelectImageProps> = ({
   const [searchTerm, setSearchTerm] = useState('');
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const term = event.target.value;
-    setSearchTerm(term);
-    onChange(term);
-  };
-
   const handleSelectItem = (item: Image) => {
     setSearchTerm(item.name);
     onSelect(item);
@@ -37,6 +33,14 @@ const SelectImage: React.FC<SelectImageProps> = ({
     if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
       setIsOpen(false);
     }
+  };
+
+  const debouncedFetchResults = useCallback(debounce(onChange, 500), []);
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const term = event.target.value;
+    setSearchTerm(term);
+    debouncedFetchResults(term);
   };
 
   useEffect(() => {
