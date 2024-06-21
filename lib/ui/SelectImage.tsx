@@ -43,7 +43,6 @@ const SelectImage: React.FC<SelectImageProps> = ({
     debouncedFetchResults(term);
   };
 
-
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
