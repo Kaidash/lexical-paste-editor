@@ -69,13 +69,7 @@ export function InsertPreselectedImageDialog({
     onClose();
   };
 
-  const handleFocusSelectImage = async (): Promise<void> => {
-    const response = await onSearchImages('');
-
-    setImages(response);
-  };
-
-  const handleOnChangeSelectImage = async (value: string): Promise<void> => {
+  const handleOnChangeSelectImage = async (value: string = ''): Promise<void> => {
     const response = await onSearchImages(value);
 
     setImages(response);
@@ -88,7 +82,7 @@ export function InsertPreselectedImageDialog({
           label="Search image"
           images={images}
           onSelect={loadImage}
-          onFocus={handleFocusSelectImage}
+          onFocus={handleOnChangeSelectImage}
           onChange={handleOnChangeSelectImage}
         />
       </div>
