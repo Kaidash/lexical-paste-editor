@@ -75,9 +75,8 @@ export default function Editor({
   initHtml,
   placeholderText = 'Enter some text...',
   pasteText,
-  images,
-  onSearchImages = () => {},
   onUpdateText = () => {},
+  onSearchImages = async () => [],
   onUploadImage = async () => '',
   onRemoveImage = async () => false,
   // comments = false,
@@ -87,11 +86,10 @@ export default function Editor({
   initHtml?: string;
   placeholderText?: string;
   pasteText?: string;
-  images?: Image[];
-  onSearchImages?: (value: string) => void;
   // comments?: boolean;
   fileIO?: boolean;
   onUpdateText?: (text: string) => void;
+  onSearchImages?: (value: string) => Promise<Image[] | []>;
   onUploadImage?: (file: string) => Promise<string>;
   onRemoveImage?: (src: string) => Promise<boolean>;
 }): JSX.Element {
@@ -163,11 +161,7 @@ export default function Editor({
   return (
     <div className="editor-shell">
       {isRichText && editable && (
-        <ToolbarPlugin
-          images={images}
-          onSearchImages={onSearchImages}
-          setIsLinkEditMode={setIsLinkEditMode}
-        />
+        <ToolbarPlugin onSearchImages={onSearchImages} setIsLinkEditMode={setIsLinkEditMode} />
       )}
       <div
         className={`editor-container ${showTreeView ? 'tree-view' : ''} ${
