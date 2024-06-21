@@ -46,9 +46,20 @@ export interface UpdateInlineImagePayload {
   node?: InlineImageNode;
 }
 
+export const isPosition = (value: string | null | undefined): value is Position => {
+  return value === 'left' || value === 'right' || value === 'full' || value === undefined || value === null;
+};
+
 function convertInlineImageElement(domNode: Node): null | DOMConversionOutput {
   if (domNode instanceof HTMLImageElement) {
     const { alt: altText, src, width, height } = domNode;
+    const position: string | null = domNode.getAttribute('position');
+
+    if (isPosition(position)) {
+      const node = $createInlineImageNode({ altText, height, src, width, position });
+      return { node };
+    }
+
     const node = $createInlineImageNode({ altText, height, src, width });
     return { node };
   }
@@ -148,6 +159,10 @@ export class InlineImageNode extends DecoratorNode<JSX.Element> {
     element.setAttribute('alt', this.__altText);
     element.setAttribute('width', this.__width.toString());
     element.setAttribute('height', this.__height.toString());
+    if (this.__position) {
+      element.setAttribute('position', this.__position.toString());
+    }
+
     return { element };
   }
 

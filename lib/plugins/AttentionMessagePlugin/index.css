@@ -1,4 +1,5 @@
 .AttentionMessage__wrapper {
+  display: flex;
   background: #fff;
   border: 3px solid #e6802d;
   color: #e6802d;

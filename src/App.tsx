@@ -5,7 +5,7 @@ import SmallEditor from './components/SmallEditor.tsx';
 import '../lib/index.css';
 
 const textHTML =
-  '<p class="PlaygroundEditorTheme__paragraph" dir="ltr"><span style="white-space: pre-wrap;">Engine oil change interval</span><span style="white-space: pre-wrap;">Unscrew the item</span></p>';
+  '<p class="PlaygroundEditorTheme__paragraph"><img src="https://s3.amazonaws.com/images.seroundtable.com/google-black-1545140719.jpg" alt="" width="inherit" height="inherit" position="left"></p><div class="AttentionMessage__wrapper" data-lexical-attention-message="true"><p class="PlaygroundEditorTheme__paragraph"><br></p></div><p class="PlaygroundEditorTheme__paragraph"><br></p>';
 
 const mockImages = [
   {
@@ -21,8 +21,8 @@ const mockImages = [
 function App() {
   const [pasteText, setPasteText] = useState<string>('');
 
-  const onUpdateText = async () => {
-    // console.log(text, 'HTML');
+  const onUpdateText = async (text: string) => {
+    console.log(text, 'HTML');
   };
 
   const onSearchImages = async () => {

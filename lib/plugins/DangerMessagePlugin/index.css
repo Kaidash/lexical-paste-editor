@@ -1,4 +1,5 @@
 .DangerMessage__wrapper {
+  display: flex;
   background: #fff;
   border: 3px solid #e62e2e;
   color: #e62e2e;
