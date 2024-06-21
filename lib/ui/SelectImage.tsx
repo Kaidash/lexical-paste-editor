@@ -2,22 +2,17 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Image } from '../types';
 import './SelectImage.css';
 
-interface Item {
-  name: string;
-  url: string;
-}
-
 interface SelectImageProps {
   label: string;
-  images: Image[];
-  onChange: (value: string) => void;
+  images: Image[] | [];
   onSelect: (selectedItem: Image) => void;
-  onFocus: () => void;
+  onFocus: () => Promise<void>;
+  onChange: (value: string) => Promise<void>;
 }
 
 const SelectImage: React.FC<SelectImageProps> = ({
   label,
-  images,
+  images = [],
   onChange,
   onFocus,
   onSelect,
@@ -32,7 +27,7 @@ const SelectImage: React.FC<SelectImageProps> = ({
     onChange(term);
   };
 
-  const handleSelectItem = (item: Item) => {
+  const handleSelectItem = (item: Image) => {
     setSearchTerm(item.name);
     onSelect(item);
     setIsOpen(false);
@@ -65,9 +60,9 @@ const SelectImage: React.FC<SelectImageProps> = ({
         />
         {isOpen && (
           <div className="SelectImage__optionsContainer">
-            {images.map((item, index) => (
+            {images.map((item: Image) => (
               <div
-                key={index}
+                key={item.name}
                 className="SelectImage__option"
                 onClick={() => handleSelectItem(item)}
               >

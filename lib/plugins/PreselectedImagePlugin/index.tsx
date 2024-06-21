@@ -21,20 +21,19 @@ import { INSERT_INLINE_IMAGE_COMMAND } from '../InlineImagePlugin';
 import '../../nodes/InlineImageNode.css';
 
 export function InsertPreselectedImageDialog({
-  images = [],
   activeEditor,
   onClose,
   onSearchImages,
 }: {
-  images: Image[] | [];
   activeEditor: LexicalEditor;
   onClose: () => void;
-  onSearchImages: (value: string) => void;
+  onSearchImages: (value: string) => Promise<Image[] | []>;
 }): JSX.Element {
   const hasModifier = useRef(false);
 
   const [src, setSrc] = useState('');
   const [altText, setAltText] = useState('');
+  const [images, setImages] = useState<Image[] | []>([]);
   const [showCaption, setShowCaption] = useState(false);
   const [position, setPosition] = useState<Position>('left');
 
@@ -70,8 +69,16 @@ export function InsertPreselectedImageDialog({
     onClose();
   };
 
-  const onFocusSearchInput = () => {
-    onSearchImages('');
+  const handleFocusSelectImage = async (): Promise<void> => {
+    const response = await onSearchImages('');
+
+    setImages(response);
+  };
+
+  const handleOnChangeSelectImage = async (value: string): Promise<void> => {
+    const response = await onSearchImages(value);
+
+    setImages(response);
   };
 
   return (
@@ -81,8 +88,8 @@ export function InsertPreselectedImageDialog({
           label="Search image"
           images={images}
           onSelect={loadImage}
-          onFocus={onFocusSearchInput}
-          onChange={onSearchImages}
+          onFocus={handleFocusSelectImage}
+          onChange={handleOnChangeSelectImage}
         />
       </div>
 

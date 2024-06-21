@@ -7,7 +7,7 @@ import '../lib/index.css';
 const textHTML =
   '<p class="PlaygroundEditorTheme__paragraph" dir="ltr"><span style="white-space: pre-wrap;">Engine oil change interval</span><span style="white-space: pre-wrap;">Unscrew the item</span></p>';
 
-const images = [
+const mockImages = [
   {
     name: 'Test',
     url: 'https://s3.amazonaws.com/images.seroundtable.com/google-black-1545140719.jpg',
@@ -25,8 +25,8 @@ function App() {
     // console.log(text, 'HTML');
   };
 
-  const onSearchImages = (value: string) => {
-    console.log(value, 'search images');
+  const onSearchImages = async () => {
+    return mockImages;
   };
 
   return (
@@ -37,7 +37,6 @@ function App() {
             placeholderText="Paste selected phrase..."
             pasteText={pasteText}
             initHtml={textHTML}
-            images={images}
             onUpdateText={onUpdateText}
             onSearchImages={onSearchImages}
           />

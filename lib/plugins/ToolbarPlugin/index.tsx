@@ -7,32 +7,18 @@
  */
 
 import { $isLinkNode, TOGGLE_LINK_COMMAND } from '@lexical/link';
-import {
-  $isListNode,
-  INSERT_ORDERED_LIST_COMMAND,
-  INSERT_UNORDERED_LIST_COMMAND,
-  ListNode,
-  ListType,
-  REMOVE_LIST_COMMAND,
-} from '@lexical/list';
+import { $isListNode, ListNode, ListType } from '@lexical/list';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { INSERT_HORIZONTAL_RULE_COMMAND } from '@lexical/react/LexicalHorizontalRuleNode';
-import {
-  $createHeadingNode,
-  $createQuoteNode,
-  $isHeadingNode,
-  HeadingTagType,
-} from '@lexical/rich-text';
+import { $isHeadingNode } from '@lexical/rich-text';
 import {
   $getSelectionStyleValueForProperty,
   $isParentElementRTL,
   $patchStyleText,
-  $setBlocksType,
 } from '@lexical/selection';
 import { $isTableNode } from '@lexical/table';
 import { $findMatchingParent, $getNearestNodeOfType, mergeRegister } from '@lexical/utils';
 import {
-  $createParagraphNode,
   $getSelection,
   $isElementNode,
   $isRangeSelection,
@@ -42,12 +28,8 @@ import {
   COMMAND_PRIORITY_CRITICAL,
   COMMAND_PRIORITY_NORMAL,
   ElementFormatType,
-  FORMAT_ELEMENT_COMMAND,
   FORMAT_TEXT_COMMAND,
-  INDENT_CONTENT_COMMAND,
   KEY_MODIFIER_COMMAND,
-  LexicalEditor,
-  OUTDENT_CONTENT_COMMAND,
   REDO_COMMAND,
   SELECTION_CHANGE_COMMAND,
   UNDO_COMMAND,
@@ -59,6 +41,15 @@ import { IS_APPLE } from '../../shared';
 import useModal from '../../hooks/useModal';
 import DropDown, { DropDownItem } from '../../ui/DropDown';
 import DropdownColorPicker from '../../ui/DropdownColorPicker';
+import InsertLayoutDialog from '../LayoutPlugin/InsertLayoutDialog';
+import { InsertTableDialog } from '../TablePlugin';
+import BlockFormatDropDown from './BlockFormatDropDown.tsx';
+import ElementFormatDropdown from './ElementFormatDropdown.tsx';
+import FontSize from './fontSize';
+import { InsertPreselectedImageDialog } from '../PreselectedImagePlugin';
+import FontDropDown from './FontDropDown.tsx';
+import Divider from './Divider.tsx';
+
 import { getSelectedNode } from '../../utils/getSelectedNode';
 import { sanitizeUrl } from '../../utils/url';
 import { INSERT_COLLAPSIBLE_COMMAND } from '../CollapsiblePlugin';
@@ -66,396 +57,15 @@ import { INSERT_PAGE_BREAK } from '../PageBreakPlugin';
 import { INSERT_ATTENTION_MESSAGE_COMMAND } from '../AttentionMessagePlugin';
 import { INSERT_DANGER_MESSAGE_COMMAND } from '../DangerMessagePlugin';
 
-import InsertLayoutDialog from '../LayoutPlugin/InsertLayoutDialog';
-import { InsertTableDialog } from '../TablePlugin';
-import FontSize from './fontSize';
+import { rootTypeToRootName, blockTypeToBlockName } from './constants.ts';
+import { TBlockName } from './types.ts';
 import { Image } from '../../types';
-import { InsertPreselectedImageDialog } from '../PreselectedImagePlugin';
-
-const blockTypeToBlockName = {
-  bullet: 'Bulleted List',
-  h1: 'Heading 1',
-  h2: 'Heading 2',
-  h3: 'Heading 3',
-  h4: 'Heading 4',
-  h5: 'Heading 5',
-  h6: 'Heading 6',
-  number: 'Numbered List',
-  paragraph: 'Normal',
-  quote: 'Quote',
-};
-
-const blockTypeWithList = {
-  ...blockTypeToBlockName,
-  number: 'number',
-  bullet: 'bullet',
-  check: 'check',
-};
-
-type TBlockName = keyof typeof blockTypeToBlockName;
-
-const rootTypeToRootName = {
-  root: 'Root',
-  table: 'Table',
-};
-
-const FONT_FAMILY_OPTIONS: [string, string][] = [
-  ['Arial', 'Arial'],
-  ['Courier New', 'Courier New'],
-  ['Georgia', 'Georgia'],
-  ['Times New Roman', 'Times New Roman'],
-  ['Trebuchet MS', 'Trebuchet MS'],
-  ['Verdana', 'Verdana'],
-];
-
-const FONT_SIZE_OPTIONS: [string, string][] = [
-  ['10px', '10px'],
-  ['11px', '11px'],
-  ['12px', '12px'],
-  ['13px', '13px'],
-  ['14px', '14px'],
-  ['15px', '15px'],
-  ['16px', '16px'],
-  ['17px', '17px'],
-  ['18px', '18px'],
-  ['19px', '19px'],
-  ['20px', '20px'],
-];
-
-const ELEMENT_FORMAT_OPTIONS: {
-  [key in Exclude<ElementFormatType, ''>]: {
-    icon: string;
-    iconRTL: string;
-    name: string;
-  };
-} = {
-  center: {
-    icon: 'center-align',
-    iconRTL: 'center-align',
-    name: 'Center Align',
-  },
-  end: {
-    icon: 'right-align',
-    iconRTL: 'left-align',
-    name: 'End Align',
-  },
-  justify: {
-    icon: 'justify-align',
-    iconRTL: 'justify-align',
-    name: 'Justify Align',
-  },
-  left: {
-    icon: 'left-align',
-    iconRTL: 'left-align',
-    name: 'Left Align',
-  },
-  right: {
-    icon: 'right-align',
-    iconRTL: 'left-align',
-    name: 'Right Align',
-  },
-  start: {
-    icon: 'left-align',
-    iconRTL: 'right-align',
-    name: 'Start Align',
-  },
-};
-
-function dropDownActiveClass(active: boolean) {
-  if (active) return 'active dropdown-item-active';
-  else return '';
-}
-
-function BlockFormatDropDown({
-  editor,
-  blockType = 'paragraph',
-  // rootType,
-  disabled = false,
-}: {
-  blockType: keyof typeof blockTypeWithList;
-  rootType: keyof typeof rootTypeToRootName;
-  editor: LexicalEditor;
-  disabled?: boolean;
-}): JSX.Element {
-  const formatParagraph = () => {
-    editor.update(() => {
-      const selection = $getSelection();
-      $setBlocksType(selection, () => $createParagraphNode());
-    });
-  };
-
-  const formatHeading = (headingSize: HeadingTagType) => {
-    if (blockType !== headingSize) {
-      editor.update(() => {
-        const selection = $getSelection();
-        $setBlocksType(selection, () => $createHeadingNode(headingSize));
-      });
-    }
-  };
-
-  const formatBulletList = () => {
-    if (blockType !== 'bullet') {
-      editor.dispatchCommand(INSERT_UNORDERED_LIST_COMMAND, undefined);
-    } else {
-      editor.dispatchCommand(REMOVE_LIST_COMMAND, undefined);
-    }
-  };
-
-  const formatNumberedList = () => {
-    if (blockType !== 'number') {
-      editor.dispatchCommand(INSERT_ORDERED_LIST_COMMAND, undefined);
-    } else {
-      editor.dispatchCommand(REMOVE_LIST_COMMAND, undefined);
-    }
-  };
-
-  const formatQuote = () => {
-    if (blockType !== 'quote') {
-      editor.update(() => {
-        const selection = $getSelection();
-        $setBlocksType(selection, () => $createQuoteNode());
-      });
-    }
-  };
-
-  return (
-    <DropDown
-      disabled={disabled}
-      buttonClassName="toolbar-item block-controls"
-      buttonIconClassName={'icon block-type ' + blockType}
-      buttonLabel={blockTypeWithList[blockType]}
-      buttonAriaLabel="Formatting options for text style"
-    >
-      <DropDownItem
-        className={'item ' + dropDownActiveClass(blockType === 'paragraph')}
-        onClick={formatParagraph}
-      >
-        <i className="icon paragraph" />
-        <span className="text">Normal</span>
-      </DropDownItem>
-      <DropDownItem
-        className={'item ' + dropDownActiveClass(blockType === 'h1')}
-        onClick={() => formatHeading('h1')}
-      >
-        <i className="icon h1" />
-        <span className="text">Heading 1</span>
-      </DropDownItem>
-      <DropDownItem
-        className={'item ' + dropDownActiveClass(blockType === 'h2')}
-        onClick={() => formatHeading('h2')}
-      >
-        <i className="icon h2" />
-        <span className="text">Heading 2</span>
-      </DropDownItem>
-      <DropDownItem
-        className={'item ' + dropDownActiveClass(blockType === 'h3')}
-        onClick={() => formatHeading('h3')}
-      >
-        <i className="icon h3" />
-        <span className="text">Heading 3</span>
-      </DropDownItem>
-      <DropDownItem
-        className={'item ' + dropDownActiveClass(blockType === 'bullet')}
-        onClick={formatBulletList}
-      >
-        <i className="icon bullet-list" />
-        <span className="text">Bullet List</span>
-      </DropDownItem>
-      <DropDownItem
-        className={'item ' + dropDownActiveClass(blockType === 'number')}
-        onClick={formatNumberedList}
-      >
-        <i className="icon numbered-list" />
-        <span className="text">Numbered List</span>
-      </DropDownItem>
-      {/* <DropDownItem
-        className={"item " + dropDownActiveClass(blockType === "check")}
-        onClick={formatCheckList}
-      >
-        <i className="icon check-list" />
-        <span className="text">Check List</span>
-      </DropDownItem> */}
-      <DropDownItem
-        className={'item ' + dropDownActiveClass(blockType === 'quote')}
-        onClick={formatQuote}
-      >
-        <i className="icon quote" />
-        <span className="text">Quote</span>
-      </DropDownItem>
-    </DropDown>
-  );
-}
-
-function Divider(): JSX.Element {
-  return <div className="divider" />;
-}
-
-function FontDropDown({
-  editor,
-  value,
-  style,
-  disabled = false,
-}: {
-  editor: LexicalEditor;
-  value: string;
-  style: string;
-  disabled?: boolean;
-}): JSX.Element {
-  const handleClick = useCallback(
-    (option: string) => {
-      editor.update(() => {
-        const selection = $getSelection();
-        if (selection !== null) {
-          $patchStyleText(selection, {
-            [style]: option,
-          });
-        }
-      });
-    },
-    [editor, style]
-  );
-
-  const buttonAriaLabel =
-    style === 'font-family'
-      ? 'Formatting options for font family'
-      : 'Formatting options for font size';
-
-  return (
-    <DropDown
-      disabled={disabled}
-      buttonClassName={'toolbar-item ' + style}
-      buttonLabel={value}
-      buttonIconClassName={style === 'font-family' ? 'icon block-type font-family' : ''}
-      buttonAriaLabel={buttonAriaLabel}
-    >
-      {(style === 'font-family' ? FONT_FAMILY_OPTIONS : FONT_SIZE_OPTIONS).map(([option, text]) => (
-        <DropDownItem
-          className={`item ${dropDownActiveClass(value === option)} ${
-            style === 'font-size' ? 'fontsize-item' : ''
-          }`}
-          onClick={() => handleClick(option)}
-          key={option}
-        >
-          <span className="text">{text}</span>
-        </DropDownItem>
-      ))}
-    </DropDown>
-  );
-}
-
-function ElementFormatDropdown({
-  editor,
-  value,
-  isRTL,
-  disabled = false,
-}: {
-  editor: LexicalEditor;
-  value: ElementFormatType;
-  isRTL: boolean;
-  disabled: boolean;
-}) {
-  const formatOption = ELEMENT_FORMAT_OPTIONS[value || 'left'];
-
-  return (
-    <DropDown
-      disabled={disabled}
-      buttonLabel={formatOption.name}
-      buttonIconClassName={`icon ${isRTL ? formatOption.iconRTL : formatOption.icon}`}
-      buttonClassName="toolbar-item spaced alignment"
-      buttonAriaLabel="Formatting options for text alignment"
-    >
-      <DropDownItem
-        onClick={() => {
-          editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'left');
-        }}
-        className="item"
-      >
-        <i className="icon left-align" />
-        <span className="text">Left Align</span>
-      </DropDownItem>
-      <DropDownItem
-        onClick={() => {
-          editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'center');
-        }}
-        className="item"
-      >
-        <i className="icon center-align" />
-        <span className="text">Center Align</span>
-      </DropDownItem>
-      <DropDownItem
-        onClick={() => {
-          editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'right');
-        }}
-        className="item"
-      >
-        <i className="icon right-align" />
-        <span className="text">Right Align</span>
-      </DropDownItem>
-      <DropDownItem
-        onClick={() => {
-          editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'justify');
-        }}
-        className="item"
-      >
-        <i className="icon justify-align" />
-        <span className="text">Justify Align</span>
-      </DropDownItem>
-      <DropDownItem
-        onClick={() => {
-          editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'start');
-        }}
-        className="item"
-      >
-        <i
-          className={`icon ${
-            isRTL ? ELEMENT_FORMAT_OPTIONS.start.iconRTL : ELEMENT_FORMAT_OPTIONS.start.icon
-          }`}
-        />
-        <span className="text">Start Align</span>
-      </DropDownItem>
-      <DropDownItem
-        onClick={() => {
-          editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'end');
-        }}
-        className="item"
-      >
-        <i
-          className={`icon ${
-            isRTL ? ELEMENT_FORMAT_OPTIONS.end.iconRTL : ELEMENT_FORMAT_OPTIONS.end.icon
-          }`}
-        />
-        <span className="text">End Align</span>
-      </DropDownItem>
-      <Divider />
-      <DropDownItem
-        onClick={() => {
-          editor.dispatchCommand(OUTDENT_CONTENT_COMMAND, undefined);
-        }}
-        className="item"
-      >
-        <i className={'icon ' + (isRTL ? 'indent' : 'outdent')} />
-        <span className="text">Outdent</span>
-      </DropDownItem>
-      <DropDownItem
-        onClick={() => {
-          editor.dispatchCommand(INDENT_CONTENT_COMMAND, undefined);
-        }}
-        className="item"
-      >
-        <i className={'icon ' + (isRTL ? 'outdent' : 'indent')} />
-        <span className="text">Indent</span>
-      </DropDownItem>
-    </DropDown>
-  );
-}
 
 export default function ToolbarPlugin({
   setIsLinkEditMode,
-  images,
-  onSearchImages = () => {},
+  onSearchImages = async () => [],
 }: {
-  images?: Image[];
-  onSearchImages?: (value: string) => void;
+  onSearchImages?: (value: string) => Promise<Image[] | []>;
   setIsLinkEditMode: Dispatch<boolean>;
 }): JSX.Element {
   const [editor] = useLexicalComposerContext();
@@ -712,6 +322,16 @@ export default function ToolbarPlugin({
     }
   }, [editor, isLink, setIsLinkEditMode]);
 
+  const showPreselectedImageModal = useCallback(() => {
+    showModal('Insert Preselect Image', (onClose) => (
+      <InsertPreselectedImageDialog
+        activeEditor={activeEditor}
+        onSearchImages={onSearchImages}
+        onClose={onClose}
+      />
+    ));
+  }, [activeEditor, onSearchImages]);
+
   return (
     <div className="toolbar">
       <button
@@ -865,35 +485,18 @@ export default function ToolbarPlugin({
           {/*  <i className="icon image" />*/}
           {/*  <span className="text">Image</span>*/}
           {/*</DropDownItem>*/}
-          {/*<DropDownItem*/}
-          {/*  onClick={() => {*/}
-          {/*    showModal('Insert Inline Image', (onClose) => (*/}
-          {/*      <InsertInlineImageDialog activeEditor={activeEditor} onClose={onClose} />*/}
-          {/*    ));*/}
-          {/*  }}*/}
-          {/*  className="item"*/}
-          {/*>*/}
-          {/*  <i className="icon image" />*/}
-          {/*  <span className="text">Inline Image</span>*/}
-          {/*</DropDownItem>*/}
-          {!!images && (
-            <DropDownItem
-              onClick={() => {
-                showModal('Insert Preselect Image', (onClose) => (
-                  <InsertPreselectedImageDialog
-                    images={images}
-                    activeEditor={activeEditor}
-                    onClose={onClose}
-                    onSearchImages={onSearchImages}
-                  />
-                ));
-              }}
-              className="item"
-            >
-              <i className="icon image" />
-              <span className="text">Insert Preselect Image</span>
-            </DropDownItem>
-          )}
+
+          {/*<DropdownInsertPreselectedImage*/}
+          {/*  title="Test"*/}
+          {/*  images={images}*/}
+          {/*  activeEditor={activeEditor}*/}
+          {/*  onSearchImages={onSearchImages}*/}
+          {/*/>*/}
+
+          <DropDownItem onClick={showPreselectedImageModal} className="item">
+            <i className="icon image" />
+            <span className="text">Insert Preselect Image</span>
+          </DropDownItem>
 
           <DropDownItem
             onClick={() => {
