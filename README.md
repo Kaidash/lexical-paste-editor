@@ -39,9 +39,8 @@ Below are the available configuration options for the component:
 |------------------|-----------|-----------------------------------------------------------------|
 | `pasteText`      | `string`  | Text which you paste                                            |
 | `initHtml`       | `string`  | Restore html text in the editor                                 |
-| `images`         | `array`   | Images list for paste in the document                           |
-| `onSearchImages` | `Promise` | Search images list by name                                      |
 | `onUpdateText`   | `func`    | Returns text in HTML format                                     |
+| `onSearchImages` | `Promise` | Search images list by name                                      |
 | `onUploadImage`  | `Promise` | Returns base64 image item which was uploaded. Return s3/GCS url |
 | `onRemoveImage`  | `Promise` | Returns src deleted image                                       |
 

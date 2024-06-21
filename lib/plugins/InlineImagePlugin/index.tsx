@@ -45,6 +45,7 @@ import { DialogActions } from '../../ui/Dialog';
 import FileInput from '../../ui/FileInput';
 import Select from '../../ui/Select';
 import TextInput from '../../ui/TextInput';
+import isBase64 from '../../utils/isBase64.ts';
 
 export type InsertInlineImagePayload = Readonly<InlineImagePayload>;
 
@@ -197,7 +198,7 @@ export default function InlineImagePlugin({
             $wrapNodeInElement(imageNode, $createParagraphNode).selectEnd();
           }
 
-          if (payload.src) {
+          if (isBase64(payload.src)) {
             onUploadImage(payload.src)
               .then((src: string): void => {
                 editor.dispatchCommand(UPDATE_INLINE_IMAGE_COMMAND, {
@@ -209,6 +210,12 @@ export default function InlineImagePlugin({
               .catch((error) => {
                 console.error('inserting Image Error', error);
               });
+          } else {
+            editor.dispatchCommand(UPDATE_INLINE_IMAGE_COMMAND, {
+              node: imageNode,
+              src: payload.src,
+              altText: payload.altText,
+            });
           }
 
           return true;
