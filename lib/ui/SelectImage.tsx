@@ -8,7 +8,7 @@ interface SelectImageProps {
   label: string;
   images: Image[] | [];
   onSelect: (selectedItem: Image) => void;
-  onFocus: () => Promise<void>;
+  onFocus: (value: string) => Promise<void>;
   onChange: (value: string) => Promise<void>;
 }
 
@@ -19,8 +19,8 @@ const SelectImage: React.FC<SelectImageProps> = ({
   onFocus,
   onSelect,
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [searchTerm, setSearchTerm] = useState<string>('');
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const handleSelectItem = (item: Image) => {
@@ -37,10 +37,14 @@ const SelectImage: React.FC<SelectImageProps> = ({
 
   const debouncedFetchResults = useCallback(debounce(onChange, 500), []);
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const term = event.target.value;
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    const term: string = event.target.value;
     setSearchTerm(term);
     debouncedFetchResults(term);
+  };
+
+  const handleInputFocus = () => {
+    onFocus(searchTerm);
   };
 
   useEffect(() => {
@@ -59,7 +63,7 @@ const SelectImage: React.FC<SelectImageProps> = ({
           type="text"
           placeholder="Search..."
           value={searchTerm}
-          onFocus={onFocus}
+          onFocus={handleInputFocus}
           onChange={handleInputChange}
         />
         {isOpen && (
