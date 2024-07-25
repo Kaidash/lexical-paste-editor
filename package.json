@@ -2,7 +2,7 @@
   "name": "lexical-paste-editor",
   "description": "Editor with limited access rights",
   "private": false,
-  "version": "0.0.19",
+  "version": "0.0.22",
   "author": "Nick Kaidash",
   "license": "MIT",
   "type": "module",
