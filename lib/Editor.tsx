@@ -215,7 +215,11 @@ export default function Editor({
             />
             {isOnlyPasteEditorMode && (
               <>
-                <EnterKeyPlugin onFocus={handleOnFocus} onDelete={handleDeleteText} onInsert={handleInsertText} />
+                <EnterKeyPlugin
+                  onFocus={handleOnFocus}
+                  onDelete={handleDeleteText}
+                  onInsert={handleInsertText}
+                />
                 <InsertTextPlugin lastPosition={lastPosition} pasteText={pasteText} />
               </>
             )}
