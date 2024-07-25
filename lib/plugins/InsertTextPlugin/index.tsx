@@ -1,5 +1,12 @@
 import { useEffect } from 'react';
-import { $createTextNode, $getSelection } from 'lexical';
+import {
+  $getSelection,
+  $isTextNode,
+  BaseSelection,
+  LexicalNode,
+  TextNode,
+  CONTROLLED_TEXT_INSERTION_COMMAND,
+} from 'lexical';
 
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 
@@ -13,21 +20,26 @@ const InsertTextPlugin = ({
 }: {
   pasteText?: string;
   lastPosition?: LastPosition;
-}) => {
+}): null => {
   const [editor] = useLexicalComposerContext();
 
-  useEffect(() => {
+  useEffect((): void => {
     if (pasteText && lastPosition) {
       editor.focus();
-      editor.update(() => {
-        const node = editor._editorState._nodeMap.get(lastPosition.key);
+      editor.update((): void => {
+        const node: LexicalNode | undefined = editor._editorState._nodeMap.get(lastPosition.key);
         if (node) {
-          // const prevText = node.getTextContent()
-          const selection = $getSelection();
+          const selection: BaseSelection | null = $getSelection();
           if (selection) {
-            // console.log(lastPostition.key, 'lastPostition.key')
-            // console.log(selection, 'selection');
-            selection.insertNodes([$createTextNode(pasteText).setMode('token')]);
+            editor.dispatchCommand(CONTROLLED_TEXT_INSERTION_COMMAND, pasteText);
+            const selection: BaseSelection | null = $getSelection();
+            const nodes: LexicalNode[] | undefined = selection?.getNodes();
+            if (nodes && nodes.length) {
+              const node: LexicalNode | TextNode = nodes[0];
+              if ($isTextNode(node)) {
+                node.setMode('token');
+              }
+            }
           }
         }
       });

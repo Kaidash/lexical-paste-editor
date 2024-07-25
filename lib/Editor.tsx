@@ -6,7 +6,7 @@
  *
  */
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { $generateHtmlFromNodes } from '@lexical/html';
 import type { LexicalEditor } from 'lexical';
 import { AutoFocusPlugin } from '@lexical/react/LexicalAutoFocusPlugin';
@@ -75,7 +75,9 @@ export default function Editor({
   initHtml,
   placeholderText = 'Enter some text...',
   pasteText,
-  onUpdateText = () => {},
+  onUpdateEditor = () => {},
+  onRemoveText = () => {},
+  onInsertText = () => {},
   onSearchImages = async () => [],
   onUploadImage = async () => '',
   onRemoveImage = async () => false,
@@ -88,7 +90,9 @@ export default function Editor({
   pasteText?: string;
   // comments?: boolean;
   fileIO?: boolean;
-  onUpdateText?: (text: string) => void;
+  onUpdateEditor?: (text: string) => void;
+  onRemoveText?: (text: string) => void;
+  onInsertText?: (text: string) => void;
   onSearchImages?: (value: string) => Promise<Image[] | []>;
   onUploadImage?: (file: string) => Promise<string>;
   onRemoveImage?: (src: string) => Promise<boolean>;
@@ -131,15 +135,26 @@ export default function Editor({
     setLastPosition(position);
   }
 
-  const onChange = (editorState: EditorState, editor: LexicalEditor) => {
-    editor.update(() => {
-      const raw = $generateHtmlFromNodes(editor, null);
-      setHtml(raw);
-    });
+  const onChange = useCallback(
+    (editorState: EditorState, editor: LexicalEditor) => {
+      editor.update(() => {
+        const raw = $generateHtmlFromNodes(editor, null);
+        setHtml(raw);
+      });
+    },
+    [historyState]
+  );
+
+  const handleDeleteText = (text: string): void => {
+    onRemoveText(text);
+  };
+
+  const handleInsertText = (text: string): void => {
+    onInsertText(text);
   };
 
   useEffect(() => {
-    onUpdateText(html);
+    onUpdateEditor(html);
   }, [html]);
 
   useEffect(() => {
@@ -200,7 +215,11 @@ export default function Editor({
             />
             {isOnlyPasteEditorMode && (
               <>
-                <EnterKeyPlugin onFocus={handleOnFocus} />
+                <EnterKeyPlugin
+                  onFocus={handleOnFocus}
+                  onDelete={handleDeleteText}
+                  onInsert={handleInsertText}
+                />
                 <InsertTextPlugin lastPosition={lastPosition} pasteText={pasteText} />
               </>
             )}

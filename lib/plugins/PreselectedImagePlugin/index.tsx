@@ -70,7 +70,7 @@ export function InsertPreselectedImageDialog({
   };
 
   const handleOnChangeSelectImage = async (value: string = ''): Promise<void> => {
-    const response = await onSearchImages(value);
+    const response: Image[] | [] = await onSearchImages(value);
 
     setImages(response);
   };

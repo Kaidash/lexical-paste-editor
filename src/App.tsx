@@ -21,8 +21,16 @@ const mockImages = [
 function App() {
   const [pasteText, setPasteText] = useState<string>('');
 
-  const onUpdateText = async () => {
-    // console.log(text, 'HTML');
+  const onUpdateEditor = async (text: string) => {
+    console.log(text, 'update text');
+  };
+
+  const onRemoveText = async (text: string) => {
+    console.log(text, 'removed text');
+  };
+
+  const onInsertText = async (text: string) => {
+    console.log(text, 'insert text');
   };
 
   const onSearchImages = async () => {
@@ -37,7 +45,9 @@ function App() {
             placeholderText="Paste selected phrase..."
             pasteText={pasteText}
             initHtml={textHTML}
-            onUpdateText={onUpdateText}
+            onUpdateEditor={onUpdateEditor}
+            onInsertText={onInsertText}
+            onRemoveText={onRemoveText}
             onSearchImages={onSearchImages}
           />
         </>
